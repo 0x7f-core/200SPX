@@ -150,13 +150,6 @@
       margin-top: 3px;
     }
 
-    .divider-line {
-      width: 100%;
-      height: 1px;
-      background-color: var(--divider);
-      margin: 8px 0;
-    }
-
     .fgi-header {
       font-size: 16px;
       font-weight: 700;
@@ -341,7 +334,6 @@
       }
     }
 
-    // Scriptable drawBandChart (W: 500, H: 300, 밴드 3px, 주가 5px)
     function drawBandChart(canvasId, closes, sma, upB, dnB) {
       const cv = getHDContext(canvasId, 500, 300);
       if (!cv) return;
@@ -382,7 +374,6 @@
       plot(pSet.map(trans), C.cp, 5);
     }
 
-    // Scriptable drawFGIChart (W: 480, H: 300, PAD: 8/12, 선: 2px, 닷: 8px)
     function drawFGIChart(canvasId, data) {
       const cv = getHDContext(canvasId, 480, 300);
       if (!cv) return;
@@ -422,7 +413,6 @@
       });
     }
 
-    // Scriptable drawGauge (W: 320, H: 180, 점 120개 원호 + 35개 점 테이퍼드 바늘)
     function drawGauge(canvasId, val) {
       const cv = getHDContext(canvasId, 320, 180);
       if (!cv) return;
@@ -430,7 +420,6 @@
 
       const cx = W / 2, cy = H - 20, radius = 120, arcThick = 10;
 
-      // 게이지 원호 (120개 점)
       for (let i = 0; i < 120; i++) {
         const t = i / 119;
         const angle = Math.PI + t * Math.PI;
@@ -442,7 +431,6 @@
         ctx.fill();
       }
 
-      // 테이퍼드 바늘 (35개 점으로 점점 얇아지는 Scriptable 고유 바늘 구현)
       const needleAngle = Math.PI + (val / 100) * Math.PI;
       const needleLen = radius - 8;
       for (let i = 0; i < 35; i++) {
@@ -456,13 +444,11 @@
         ctx.fill();
       }
 
-      // 중심 핀 (지름 16)
       ctx.fillStyle = C.p1;
       ctx.beginPath();
       ctx.arc(cx, cy, 8, 0, Math.PI * 2);
       ctx.fill();
 
-      // 수치 텍스트 (라벨 거리 radius + 22)
       const labelDist = radius + 22;
       const lx = cx + Math.cos(needleAngle) * labelDist;
       const ly = cy + Math.sin(needleAngle) * labelDist;
@@ -540,14 +526,16 @@
         if (!res.ok) throw new Error("지표 데이터를 가져올 수 없습니다.");
         const data = await res.json();
 
-        // Scriptable 원본 동일 뉴욕 시간 포맷 (yy.MM.dd. HH:mm '기준')
-        const formatNYTime = (ts) => {
+        // 한국 표준시(KST) 기준 포맷 (yy.MM.dd. HH:mm 기준)
+        const formatKSTTime = (ts) => {
           const d = new Date(ts * 1000);
-          return new Intl.DateTimeFormat('en-CA', {
-            timeZone: 'America/New_York',
-            year: '2-digit', month: '2-digit', day: '2-digit',
-            hour: '2-digit', minute: '2-digit', hour12: false
-          }).format(d).replace(/-/g, '.') + ' 기준';
+          const kst = new Date(d.toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
+          const yy = String(kst.getFullYear()).slice(-2);
+          const mm = String(kst.getMonth() + 1).padStart(2, '0');
+          const dd = String(kst.getDate()).padStart(2, '0');
+          const hh = String(kst.getHours()).padStart(2, '0');
+          const min = String(kst.getMinutes()).padStart(2, '0');
+          return `${yy}.${mm}.${dd}. ${hh}:${min} 기준`;
         };
 
         if (data.version) {
@@ -555,8 +543,8 @@
           document.getElementById("qqq-ver").innerText = data.version;
         }
 
-        document.getElementById("spx-updated").innerText = formatNYTime(data.spxTime);
-        document.getElementById("qqq-updated").innerText = formatNYTime(data.qqqTime);
+        document.getElementById("spx-updated").innerText = formatKSTTime(data.spxTime);
+        document.getElementById("qqq-updated").innerText = formatKSTTime(data.qqqTime);
 
         drawBandChart("spxChart", data.spx.closes, data.spx.sma, data.spx.upB, data.spx.dnB);
         renderTokens("spx-info", data.spx.sig, 14);
