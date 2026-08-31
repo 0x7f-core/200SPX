@@ -75,7 +75,7 @@ jobs:
             done
           fi
 
-      - name: Inject Perfect Full-Fit Android Widgets
+      - name: Inject Perfect Android Widgets
         run: |
           mkdir -p android/app/src/main/res/drawable
           cat << 'EOF' > android/app/src/main/res/drawable/ic_refresh.xml
@@ -109,7 +109,8 @@ jobs:
                   android:id="@+id/widget_image"
                   android:layout_width="match_parent"
                   android:layout_height="match_parent"
-                  android:scaleType="fitCenter" />
+                  android:scaleType="fitCenter"
+                  android:adjustViewBounds="true" />
               <ImageView
                   android:id="@+id/btn_refresh"
                   android:layout_width="28dp"
@@ -172,6 +173,8 @@ jobs:
           import android.graphics.Canvas;
           import android.os.Handler;
           import android.os.Looper;
+          import android.util.DisplayMetrics;
+          import android.util.TypedValue;
           import android.view.View;
           import android.webkit.WebSettings;
           import android.webkit.WebView;
@@ -191,27 +194,28 @@ jobs:
               private void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
                   new Handler(Looper.getMainLooper()).post(() -> {
                       try {
+                          DisplayMetrics dm = context.getResources().getDisplayMetrics();
+                          int widthPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 360, dm);
+                          int heightPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 175, dm);
+
                           WebView webView = new WebView(context.getApplicationContext());
                           WebSettings settings = webView.getSettings();
                           settings.setJavaScriptEnabled(true);
                           settings.setDomStorageEnabled(true);
                           settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
 
-                          // 안드로이드 위젯 황금비율 표준 규격 (960 x 460)
-                          int width = 960;
-                          int height = 460;
                           webView.measure(
-                              View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY),
-                              View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY)
+                              View.MeasureSpec.makeMeasureSpec(widthPx, View.MeasureSpec.EXACTLY),
+                              View.MeasureSpec.makeMeasureSpec(heightPx, View.MeasureSpec.EXACTLY)
                           );
-                          webView.layout(0, 0, width, height);
+                          webView.layout(0, 0, widthPx, heightPx);
 
                           webView.setWebViewClient(new WebViewClient() {
                               @Override
                               public void onPageFinished(WebView view, String url) {
                                   new Handler(Looper.getMainLooper()).postDelayed(() -> {
                                       try {
-                                          Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+                                          Bitmap bitmap = Bitmap.createBitmap(widthPx, heightPx, Bitmap.Config.ARGB_8888);
                                           Canvas canvas = new Canvas(bitmap);
                                           view.draw(canvas);
 
