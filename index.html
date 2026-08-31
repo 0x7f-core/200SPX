@@ -159,6 +159,18 @@
       padding-left: 6px;
     }
 
+    body:not(.is-widget) .fgi-info-box {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center !important;
+      justify-content: center !important;
+      text-align: center !important;
+      gap: 4px;
+      padding-left: 0 !important;
+    }
+
     body:not(.is-widget) .sig-row {
       font-size: 16px;
       font-weight: 600;
@@ -191,22 +203,13 @@
       letter-spacing: -0.2px;
     }
 
-    body:not(.is-widget) .fgi-info-box {
-      flex: 1;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      gap: 4px;
-    }
-
     body:not(.is-widget) .fgi-rating {
       font-size: 16px;
       font-weight: 600;
       margin-top: 2px;
       letter-spacing: -0.2px;
+      text-align: center;
+      width: 100%;
     }
 
     body:not(.is-widget) .fgi-stats {
@@ -216,6 +219,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      text-align: center;
+      width: 100%;
       gap: 6px;
       letter-spacing: -0.2px;
     }
@@ -270,7 +275,7 @@
     }
 
     /* =============================================================================
-       2. 안드로이드 홈 위젯 전용 뷰포트 (body.is-widget) - 여백 및 비율 완벽 보정
+       2. 안드로이드 홈 위젯 전용 뷰포트 (body.is-widget)
        ============================================================================= */
     body.is-widget {
       width: 100vw !important;
@@ -301,7 +306,7 @@
       display: none !important;
     }
 
-    /* 위젯별 격리: 요청된 1개 카드 외에는 완전 숨김 */
+    /* 위젯별 격리 */
     body.view-spx #card-qqq,
     body.view-spx #card-fgi {
       display: none !important;
@@ -317,7 +322,6 @@
       display: none !important;
     }
 
-    /* 화면에 남은 단 1개의 위젯 카드가 전체 크기 차지 */
     body.is-widget .card {
       width: 100% !important;
       height: 100% !important;
@@ -374,7 +378,6 @@
       width: 100% !important;
     }
 
-    /* 차트 영역: 46% 배분 */
     body.is-widget .chart-box {
       flex: 1.05 !important;
       height: 100% !important;
@@ -391,7 +394,6 @@
       object-fit: fill !important;
     }
 
-    /* 텍스트 정보 영역: 54% 배분 (우측 잘림 방지) */
     body.is-widget .info-box {
       flex: 1.25 !important;
       display: flex !important;
@@ -400,6 +402,26 @@
       gap: 0.6vh !important;
       min-width: 0 !important;
       padding-left: 0.5vw !important;
+    }
+
+    /* FGI 전용 우측 완전 중앙 정렬 */
+    body.is-widget .fgi-info-box {
+      flex: 1.25 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      text-align: center !important;
+      gap: 0.5vh !important;
+      min-width: 0 !important;
+      padding-left: 0 !important;
+    }
+
+    body.is-widget .fgi-info-box canvas {
+      max-height: 100% !important;
+      width: auto !important;
+      max-width: 100% !important;
+      margin: 0 auto !important;
     }
 
     body.is-widget .sig-row {
@@ -433,25 +455,22 @@
       letter-spacing: -0.3px !important;
     }
 
-    body.is-widget .fgi-info-box {
-      flex: 1.2 !important;
-      display: flex !important;
-      flex-direction: column !important;
-      align-items: center !important;
-      justify-content: center !important;
-      gap: 0.6vh !important;
-      min-width: 0 !important;
-    }
-
     body.is-widget .fgi-rating {
       font-size: min(4.5vw, 9.4vh) !important;
       font-weight: 600 !important;
-      margin-top: 0.4vh !important;
+      margin-top: 0.3vh !important;
       white-space: nowrap !important;
+      text-align: center !important;
+      width: 100% !important;
     }
 
     body.is-widget .fgi-stats {
-      font-size: min(3.5vw, 7.4vh) !important;
+      font-size: min(3.4vw, 7.2vh) !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      text-align: center !important;
+      width: 100% !important;
       gap: 1.5vw !important;
       white-space: nowrap !important;
       font-weight: 500 !important;
@@ -502,7 +521,7 @@
         <div class="chart-box">
           <canvas id="fgiHistoryChart"></canvas>
         </div>
-        <div class="info-box" id="fgiGaugeBox">
+        <div class="fgi-info-box" id="fgiGaugeBox">
           <canvas id="fgiGauge"></canvas>
           <div class="fgi-rating" id="fgi-rating-text">-</div>
           <div class="fgi-stats" id="fgi-stats-text"></div>
