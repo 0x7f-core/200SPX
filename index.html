@@ -59,7 +59,6 @@
       user-select: none;
     }
 
-    /* 공통 캔버스 및 토큰 스타일 */
     canvas {
       width: 100%;
       height: auto;
@@ -129,7 +128,7 @@
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      margin-bottom: 2px;
+      margin-bottom: 4px;
     }
 
     html:not(.is-widget) .title,
@@ -142,12 +141,15 @@
     html:not(.is-widget) .version {
       font-size: 9.5px;
       color: var(--p2);
+      font-weight: 400;
     }
 
     html:not(.is-widget) .updated-time {
       font-size: 11px;
-      margin-bottom: 10px;
+      font-weight: 400;
+      margin-bottom: 12px;
       letter-spacing: -0.2px;
+      color: var(--p1);
     }
 
     html:not(.is-widget) .content-row {
@@ -197,6 +199,7 @@
     html:not(.is-widget) .status-text {
       font-size: 11.5px;
       color: var(--status-p);
+      font-weight: 400;
       margin-top: 3px;
     }
 
@@ -272,11 +275,13 @@
       background: var(--card-bg);
     }
 
+    /* 좌측 상단 헤더 영역 여백 조정 */
     html.is-widget .card-header {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      margin-bottom: 0.2vh;
+      margin-bottom: 0.6vh;
+      width: 100%;
     }
 
     html.is-widget .title,
@@ -285,20 +290,25 @@
       font-weight: 600;
       letter-spacing: -0.4px;
       white-space: nowrap;
-      line-height: 1.1;
+      line-height: 1.15;
     }
 
     html.is-widget .version {
       font-size: min(2.6vw, 5.5vh);
       color: #7c7c80;
+      font-weight: 400;
       white-space: nowrap;
     }
 
+    /* 제목과 날짜 사이 쾌적한 분리 간격 부여 */
     html.is-widget .updated-time {
       font-size: min(2.9vw, 6.2vh);
-      margin-bottom: 0.8vh;
+      font-weight: 400;
+      margin-top: 0.2vh;
+      margin-bottom: 1.2vh;
+      color: #FFFFFF;
       white-space: nowrap;
-      line-height: 1.1;
+      line-height: 1.15;
     }
 
     html.is-widget .content-row {
@@ -360,11 +370,16 @@
       letter-spacing: -0.3px;
     }
 
-    html.is-widget .token-action { margin-left: 1.0vw; }
+    html.is-widget .token-action {
+      margin-left: 1.0vw;
+      color: #FFFFFF;
+      font-weight: 600;
+    }
 
     html.is-widget .status-text {
       font-size: min(2.95vw, 6.2vh);
       color: #9a9aa0;
+      font-weight: 400;
       margin-top: 0.4vh;
       white-space: nowrap;
       letter-spacing: -0.35px;
@@ -373,6 +388,7 @@
     html.is-widget .dd-text {
       font-size: min(3.4vw, 7.4vh);
       font-weight: 600;
+      color: #FFFFFF;
       margin-top: 0.5vh;
       white-space: nowrap;
       letter-spacing: -0.3px;
