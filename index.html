@@ -7,6 +7,10 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>A Godly Investor's True Quest</title>
   <style>
+    /* =============================================================================
+       A Godly Investor's True Quest (Multi-Version Hub & Widget)
+       "사람이 마음으로 자기의 길을 계획할지라도 그의 걸음을 인도하시는 이는 여호와시니라" (잠언 16장 9절)
+       ============================================================================= */
     :root {
       --bg: #000000;
       --card-bg: #000000;
@@ -16,13 +20,16 @@
       --dot: #666666;
       --slash: #FFFFFF;
       --divider: #333333;
+
       --tqqq: #e8714f;
       --spym: #b07cc0;
       --sgov: #5bb8e8;
+      --ma: #afd485;
+      --cp: #80dfff;
       --upperBand: #e070c0;
       --lowerBand: #afd485;
-      --cp: #80dfff;
       --alert: #ff4d4d;
+
       --extremeFear: #e8714f;
       --fear: #f0a0a0;
       --neutral: #AAAAAA;
@@ -45,8 +52,8 @@
 
     body {
       color: var(--p1);
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Roboto", sans-serif;
-      padding: calc(8px + env(safe-area-inset-top)) 10px calc(8px + env(safe-area-inset-bottom)) 10px;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
+      padding: calc(10px + env(safe-area-inset-top)) 12px calc(10px + env(safe-area-inset-bottom)) 12px;
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
       user-select: none;
@@ -56,13 +63,13 @@
       width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 14px;
     }
 
     .card {
       width: 100%;
       background: var(--card-bg);
-      border-radius: 18px;
+      border-radius: 20px;
       padding: 12px 14px;
       border: 1px solid var(--card-border);
     }
@@ -75,7 +82,7 @@
     }
 
     .title {
-      font-size: clamp(14px, 3.8vw, 17px);
+      font-size: 16px;
       font-weight: 700;
       text-decoration: none;
       color: var(--p1);
@@ -83,13 +90,13 @@
     }
 
     .version {
-      font-size: clamp(8px, 2vw, 10px);
+      font-size: 9px;
       color: var(--p2);
       font-weight: 400;
     }
 
     .updated-time {
-      font-size: clamp(9px, 2.4vw, 11px);
+      font-size: 10px;
       color: var(--p1);
       margin-bottom: 6px;
       font-weight: 400;
@@ -99,12 +106,12 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 8px;
+      gap: 10px;
       width: 100%;
     }
 
     .chart-box {
-      flex: 1.1;
+      flex: 1;
       min-width: 0;
       display: flex;
       align-items: center;
@@ -112,7 +119,7 @@
     }
 
     .info-box {
-      flex: 1.15;
+      flex: 1.1;
       min-width: 0;
       display: flex;
       flex-direction: column;
@@ -127,7 +134,7 @@
     }
 
     .sig-row {
-      font-size: clamp(13px, 3.4vw, 16px);
+      font-size: 15px;
       font-weight: 700;
       line-height: 1.25;
       display: flex;
@@ -143,20 +150,20 @@
     .token-alert  { color: var(--alert); }
 
     .status-text {
-      font-size: clamp(10px, 2.6vw, 12px);
+      font-size: 11px;
       margin-top: 2px;
       font-weight: 400;
     }
 
     .dd-text {
-      font-size: clamp(11px, 2.8vw, 13px);
-      font-weight: 500;
+      font-size: 11px;
+      font-weight: 600;
       color: var(--p1);
       margin-top: 3px;
     }
 
     .fgi-header {
-      font-size: clamp(14px, 3.8vw, 17px);
+      font-size: 16px;
       font-weight: 700;
       margin-bottom: 4px;
       text-decoration: none;
@@ -166,25 +173,26 @@
     }
 
     .fgi-info-box {
-      flex: 1.15;
+      flex: 1.1;
       min-width: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
+      gap: 2px;
     }
 
     .fgi-rating {
-      font-size: clamp(13px, 3.4vw, 16px);
+      font-size: 15px;
       font-weight: 700;
       margin-top: 2px;
     }
 
     .fgi-stats {
-      font-size: clamp(11px, 2.8vw, 14px);
+      font-size: 13px;
       font-weight: 500;
-      margin-top: 3px;
+      margin-top: 2px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -214,18 +222,18 @@
       border-radius: 14px;
       font-size: 13px;
       font-weight: 600;
-      margin-top: 4px;
+      margin-top: 6px;
       cursor: pointer;
     }
     .refresh-btn:active { background: #222; }
 
-    /* =========================================
-       위젯 전용 규격화 스타일 (960 x 460 기준 무절단 렌더링)
-       ========================================= */
+    /* =============================================================================
+       위젯 전용 규격화 뷰포트 (960 x 460 안드로이드 홈 위젯 최적화)
+       ============================================================================= */
     body.is-widget {
       width: 960px;
       height: 460px;
-      padding: 18px 24px;
+      padding: 16px 22px;
       margin: 0;
       overflow: hidden;
       display: flex;
@@ -247,8 +255,8 @@
       flex-direction: column;
       justify-content: space-between;
       padding: 18px 24px;
-      border-radius: 28px;
-      border: 2px solid #222224;
+      border-radius: 26px;
+      border: 1px solid #222224;
       background: #000000;
       box-sizing: border-box;
     }
@@ -261,14 +269,14 @@
     }
 
     body.is-widget .version {
-      font-size: 17px !important;
+      font-size: 16px !important;
       color: #888888;
     }
 
     body.is-widget .updated-time {
-      font-size: 18px !important;
-      margin-bottom: 6px;
-      color: #AAAAAA;
+      font-size: 17px !important;
+      margin-bottom: 8px;
+      color: #FFFFFF;
     }
 
     body.is-widget .content-row {
@@ -276,7 +284,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 20px;
+      gap: 24px;
       min-height: 0;
     }
 
@@ -297,7 +305,7 @@
     }
 
     body.is-widget .info-box {
-      flex: 1.1;
+      flex: 1.15;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -306,7 +314,7 @@
     }
 
     body.is-widget .sig-row {
-      font-size: 26px !important;
+      font-size: 27px !important;
       font-weight: 700;
       line-height: 1.25;
       white-space: nowrap;
@@ -320,12 +328,13 @@
 
     body.is-widget .dd-text {
       font-size: 20px !important;
+      font-weight: 600;
       margin-top: 4px;
       white-space: nowrap;
     }
 
     body.is-widget .fgi-info-box {
-      flex: 1;
+      flex: 1.1;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -335,14 +344,14 @@
     }
 
     body.is-widget .fgi-rating {
-      font-size: 24px !important;
+      font-size: 25px !important;
       font-weight: 700;
       margin-top: 4px;
       white-space: nowrap;
     }
 
     body.is-widget .fgi-stats {
-      font-size: 20px !important;
+      font-size: 21px !important;
       gap: 6px;
       white-space: nowrap;
     }
@@ -406,6 +415,7 @@
   <script>
     const WORKER_URL = "https://spx-indicator-api.jinwook0904.workers.dev";
 
+    // Scriptable C 팔레트와 1:1 일치
     const C = {
       bg: "#000000",
       p1: "#FFFFFF",
@@ -413,13 +423,16 @@
       dot: "#666666",
       slash: "#FFFFFF",
       divider: "#333333",
+
       tqqq: "#e8714f",
       spym: "#b07cc0",
       sgov: "#5bb8e8",
+      ma: "#afd485",
+      cp: "#80dfff",
       upperBand: "#e070c0",
       lowerBand: "#afd485",
-      cp: "#80dfff",
       alert: "#ff4d4d",
+
       extremeFear: "#e8714f",
       fear: "#f0a0a0",
       neutral: "#AAAAAA",
@@ -466,25 +479,26 @@
       }
     }
 
+    // Scriptable drawBandChart 1:1 구현
     function drawBandChart(canvasId, closes, sma, upB, dnB) {
-      const cv = getHDContext(canvasId, 440, 250);
+      const cv = getHDContext(canvasId, 500, 300);
       if (!cv) return;
       const { ctx } = cv;
 
       const SIZE = 90;
       const pSet = closes.slice(-SIZE);
       const sSet = sma.slice(-SIZE);
-      const uSet = sSet.map(v => v === null || isNaN(v) ? NaN : v * (1 + upB));
-      const lSet = sSet.map(v => v === null || isNaN(v) ? NaN : v * (1 - dnB));
+      const uSet = sSet.map(v => isNaN(v) ? NaN : v * (1 + upB));
+      const lSet = sSet.map(v => isNaN(v) ? NaN : v * (1 - dnB));
 
-      const all = pSet.concat(uSet, lSet).filter(v => !isNaN(v));
+      const all = pSet.concat(uSet).concat(lSet).filter(v => !isNaN(v));
       const min = Math.min(...all);
       const max = Math.max(...all);
       const range = (max - min) === 0 ? 1 : (max - min);
 
       const trans = (v, i) => ({
-        x: 12 + (i / (SIZE - 1)) * 416,
-        y: 238 - ((v - min) / range) * 226,
+        x: 15 + (i / (SIZE - 1)) * 470,
+        y: 285 - ((v - min) / range) * 270,
       });
 
       const plot = (dat, col, wid) => {
@@ -498,6 +512,8 @@
         });
         ctx.strokeStyle = col;
         ctx.lineWidth = wid;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
         ctx.stroke();
       };
 
@@ -506,8 +522,9 @@
       plot(pSet.map(trans), C.cp, 5);
     }
 
+    // Scriptable drawFGIChart 1:1 구현
     function drawFGIChart(canvasId, data) {
-      const cv = getHDContext(canvasId, 440, 250);
+      const cv = getHDContext(canvasId, 480, 300);
       if (!cv) return;
       const { ctx, W, H } = cv;
 
@@ -517,41 +534,46 @@
       const toY = (val) => PAD_T + (1 - val / 100) * usableH;
       const toX = (i) => PAD_L + (i / (data.length - 1)) * usableW;
 
+      // 25, 50, 75 가이드 라인
       [25, 50, 75].forEach(level => {
         ctx.beginPath();
         ctx.moveTo(PAD_L, toY(level));
         ctx.lineTo(W - PAD_R, toY(level));
-        ctx.strokeStyle = "rgba(170, 170, 170, 0.25)";
-        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = "rgba(170, 170, 170, 0.2)";
+        ctx.lineWidth = 1;
         ctx.stroke();
       });
 
+      // 추세선
       ctx.beginPath();
       data.forEach((d, i) => {
         const x = toX(i), y = toY(parseFloat(d.y));
         if (i === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
       });
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.45)";
-      ctx.lineWidth = 2.5;
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
+      ctx.lineWidth = 2;
       ctx.stroke();
 
+      // 상태별 컬러 닷 (8x8)
       data.forEach((d, i) => {
         const x = toX(i), y = toY(parseFloat(d.y));
         ctx.fillStyle = fgiColor(parseFloat(d.y));
         ctx.beginPath();
-        ctx.arc(x, y, 4.5, 0, Math.PI * 2);
+        ctx.arc(x, y, 4, 0, Math.PI * 2);
         ctx.fill();
       });
     }
 
+    // Scriptable drawGauge 1:1 구현
     function drawGauge(canvasId, val) {
-      const cv = getHDContext(canvasId, 280, 150);
+      const cv = getHDContext(canvasId, 320, 180);
       if (!cv) return;
       const { ctx, W, H } = cv;
 
-      const cx = W / 2, cy = H - 15, radius = 105, arcThick = 11;
+      const cx = W / 2, cy = H - 20, radius = 120, arcThick = 10;
 
+      // 120개 컬러 닷 원호
       for (let i = 0; i < 120; i++) {
         const t = i / 119;
         const angle = Math.PI + t * Math.PI;
@@ -563,34 +585,38 @@
         ctx.fill();
       }
 
+      // 흰색 게이지 바늘 (끝으로 갈수록 뾰족해짐)
       const needleAngle = Math.PI + (val / 100) * Math.PI;
       const needleLen = radius - 8;
       for (let i = 0; i < 35; i++) {
         const t = i / 34;
         const nx = cx + Math.cos(needleAngle) * needleLen * t;
         const ny = cy + Math.sin(needleAngle) * needleLen * t;
-        const thick = 11 * (1 - t);
+        const thick = 12 * (1 - t);
         ctx.fillStyle = C.p1;
         ctx.beginPath();
         ctx.arc(nx, ny, thick / 2, 0, Math.PI * 2);
         ctx.fill();
       }
 
+      // 중심 원형 캡
       ctx.fillStyle = C.p1;
       ctx.beginPath();
-      ctx.arc(cx, cy, 7, 0, Math.PI * 2);
+      ctx.arc(cx, cy, 8, 0, Math.PI * 2);
       ctx.fill();
 
+      // 바늘 끝 숫자 라벨 (22px Bold)
       const labelDist = radius + 22;
       const lx = cx + Math.cos(needleAngle) * labelDist;
       const ly = cy + Math.sin(needleAngle) * labelDist;
       ctx.fillStyle = C.p1;
-      ctx.font = "bold 20px -apple-system, sans-serif";
+      ctx.font = "bold 22px -apple-system, sans-serif";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText(val.toFixed(0), lx, ly);
     }
 
+    // Scriptable addToken 방식 1:1 토큰 렌더링
     function renderTokens(containerId, sig) {
       const el = document.getElementById(containerId);
       if (!el || !sig) return;
@@ -681,12 +707,15 @@
         document.getElementById("spx-updated").innerText = formatKSTTime(data.spxTime);
         document.getElementById("qqq-updated").innerText = formatKSTTime(data.qqqTime);
 
-        drawBandChart("spxChart", data.spx.closes, data.spx.sma, data.spx.upB, data.spx.dnB);
+        // SPX ±2.5% 밴드
+        drawBandChart("spxChart", data.spx.closes, data.spx.sma, 0.025, 0.025);
         renderTokens("spx-info", data.spx.sig);
 
-        drawBandChart("qqqChart", data.qqq.closes, data.qqq.sma, data.qqq.upB, data.qqq.dnB);
+        // QQQ ±2.0% 밴드
+        drawBandChart("qqqChart", data.qqq.closes, data.qqq.sma, 0.02, 0.02);
         renderTokens("qqq-info", data.qqq.sig);
 
+        // FGI 차트 및 게이지
         drawFGIChart("fgiHistoryChart", data.fgi.data);
         drawGauge("fgiGauge", data.fgi.latestVal);
 
@@ -697,7 +726,7 @@
         const statsEl = document.getElementById("fgi-stats-text");
         statsEl.innerHTML = `
           <span style="color: ${fgiColor(data.fgi.latestVal)}">현재 ${data.fgi.latestVal.toFixed(0)}</span>
-          <span class="fgi-slash">/</span>
+          <span class="fgi-slash"> / </span>
           <span style="color: ${fgiColor(data.fgi.avg30)}">30일 평균 ${data.fgi.avg30.toFixed(0)}</span>
         `;
 
