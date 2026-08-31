@@ -75,7 +75,7 @@ jobs:
             done
           fi
 
-      - name: Inject Ultra-HD Android Widgets
+      - name: Inject Edge-to-Edge 4x2 Android Widgets
         run: |
           mkdir -p android/app/src/main/res/drawable
           cat << 'EOF' > android/app/src/main/res/drawable/ic_refresh.xml
@@ -171,7 +171,6 @@ jobs:
           import android.content.Intent;
           import android.graphics.Bitmap;
           import android.graphics.Canvas;
-          import android.graphics.Paint;
           import android.os.Handler;
           import android.os.Looper;
           import android.util.DisplayMetrics;
@@ -196,10 +195,10 @@ jobs:
                       try {
                           DisplayMetrics dm = context.getResources().getDisplayMetrics();
                           
-                          // 3배 슈퍼샘플링으로 대형 위젯에서도 깨짐 없는 초고해상도 캡처
-                          float scaleFactor = Math.max(dm.density * 1.3f, 3.2f);
-                          int widthPx = (int) (380 * scaleFactor);
-                          int heightPx = (int) (185 * scaleFactor);
+                          // 4x2 최적화 풀-와이드 해상도 비율 (430 x 180)
+                          float scaleFactor = Math.max(dm.density * 1.35f, 3.5f);
+                          int widthPx = (int) (430 * scaleFactor);
+                          int heightPx = (int) (180 * scaleFactor);
 
                           WebView webView = new WebView(context.getApplicationContext());
                           WebSettings settings = webView.getSettings();
@@ -220,7 +219,7 @@ jobs:
                                       try {
                                           Bitmap bitmap = Bitmap.createBitmap(widthPx, heightPx, Bitmap.Config.ARGB_8888);
                                           Canvas canvas = new Canvas(bitmap);
-                                          canvas.drawColor(0xFF000000); // 딥블랙 배경 초기화
+                                          canvas.drawColor(0xFF000000);
                                           view.draw(canvas);
 
                                           RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.spx_widget_layout);
@@ -322,5 +321,5 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: 200SPX-UHD-APK
+          name: 200SPX-WideFit-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
