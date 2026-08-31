@@ -52,7 +52,7 @@
 
     body {
       color: var(--p1);
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Roboto", "Helvetica Neue", sans-serif;
       padding: calc(10px + env(safe-area-inset-top)) 12px calc(10px + env(safe-area-inset-bottom)) 12px;
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
@@ -119,7 +119,7 @@
     }
 
     .info-box {
-      flex: 1.1;
+      flex: 1.15;
       min-width: 0;
       display: flex;
       flex-direction: column;
@@ -173,7 +173,7 @@
     }
 
     .fgi-info-box {
-      flex: 1.1;
+      flex: 1.15;
       min-width: 0;
       display: flex;
       flex-direction: column;
@@ -228,23 +228,28 @@
     .refresh-btn:active { background: #222; }
 
     /* =============================================================================
-       위젯 전용 규격화 뷰포트 (960 x 460 안드로이드 홈 위젯 최적화)
+       위젯 전용 무절단 100% 뷰포트 스타일 (DPR 보정 적용)
        ============================================================================= */
     body.is-widget {
-      width: 960px;
-      height: 460px;
-      padding: 16px 22px;
+      width: 100vw;
+      height: 100vh;
+      max-width: 100vw;
+      max-height: 100vh;
       margin: 0;
+      padding: 6px 8px;
       overflow: hidden;
       display: flex;
       flex-direction: column;
       justify-content: center;
       box-sizing: border-box;
+      background: #000000;
     }
 
     body.is-widget .widget-container {
       width: 100%;
       height: 100%;
+      display: flex;
+      flex-direction: column;
       gap: 0;
     }
 
@@ -254,28 +259,35 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 18px 24px;
-      border-radius: 26px;
-      border: 1px solid #222224;
+      padding: 10px 12px;
+      border-radius: 18px;
+      border: 1px solid #1c1c1e;
       background: #000000;
       box-sizing: border-box;
     }
 
+    body.is-widget .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 2px;
+    }
+
     body.is-widget .title,
     body.is-widget .fgi-header {
-      font-size: 26px !important;
+      font-size: 15px !important;
       font-weight: 700;
       letter-spacing: -0.3px;
     }
 
     body.is-widget .version {
-      font-size: 16px !important;
+      font-size: 8px !important;
       color: #888888;
     }
 
     body.is-widget .updated-time {
-      font-size: 17px !important;
-      margin-bottom: 8px;
+      font-size: 10px !important;
+      margin-bottom: 4px;
       color: #FFFFFF;
     }
 
@@ -284,7 +296,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 24px;
+      gap: 8px;
       min-height: 0;
     }
 
@@ -302,6 +314,7 @@
       max-width: 100%;
       width: auto;
       height: auto;
+      object-fit: contain;
     }
 
     body.is-widget .info-box {
@@ -309,27 +322,27 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      gap: 6px;
+      gap: 2px;
       min-width: 0;
     }
 
     body.is-widget .sig-row {
-      font-size: 27px !important;
+      font-size: 15px !important;
       font-weight: 700;
       line-height: 1.25;
       white-space: nowrap;
     }
 
     body.is-widget .status-text {
-      font-size: 19px !important;
+      font-size: 10.5px !important;
       margin-top: 2px;
       white-space: nowrap;
     }
 
     body.is-widget .dd-text {
-      font-size: 20px !important;
+      font-size: 11px !important;
       font-weight: 600;
-      margin-top: 4px;
+      margin-top: 3px;
       white-space: nowrap;
     }
 
@@ -339,20 +352,20 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 4px;
+      gap: 2px;
       min-width: 0;
     }
 
     body.is-widget .fgi-rating {
-      font-size: 25px !important;
+      font-size: 14px !important;
       font-weight: 700;
-      margin-top: 4px;
+      margin-top: 2px;
       white-space: nowrap;
     }
 
     body.is-widget .fgi-stats {
-      font-size: 21px !important;
-      gap: 6px;
+      font-size: 12px !important;
+      gap: 4px;
       white-space: nowrap;
     }
   </style>
@@ -415,7 +428,6 @@
   <script>
     const WORKER_URL = "https://spx-indicator-api.jinwook0904.workers.dev";
 
-    // Scriptable C 팔레트와 1:1 일치
     const C = {
       bg: "#000000",
       p1: "#FFFFFF",
@@ -443,7 +455,7 @@
     function getHDContext(canvasId, logicalW, logicalH) {
       const cvs = document.getElementById(canvasId);
       if (!cvs) return null;
-      const dpr = 2;
+      const dpr = window.devicePixelRatio || 2;
       cvs.width = logicalW * dpr;
       cvs.height = logicalH * dpr;
       cvs.style.aspectRatio = `${logicalW} / ${logicalH}`;
@@ -479,7 +491,6 @@
       }
     }
 
-    // Scriptable drawBandChart 1:1 구현
     function drawBandChart(canvasId, closes, sma, upB, dnB) {
       const cv = getHDContext(canvasId, 500, 300);
       if (!cv) return;
@@ -522,7 +533,6 @@
       plot(pSet.map(trans), C.cp, 5);
     }
 
-    // Scriptable drawFGIChart 1:1 구현
     function drawFGIChart(canvasId, data) {
       const cv = getHDContext(canvasId, 480, 300);
       if (!cv) return;
@@ -534,7 +544,6 @@
       const toY = (val) => PAD_T + (1 - val / 100) * usableH;
       const toX = (i) => PAD_L + (i / (data.length - 1)) * usableW;
 
-      // 25, 50, 75 가이드 라인
       [25, 50, 75].forEach(level => {
         ctx.beginPath();
         ctx.moveTo(PAD_L, toY(level));
@@ -544,7 +553,6 @@
         ctx.stroke();
       });
 
-      // 추세선
       ctx.beginPath();
       data.forEach((d, i) => {
         const x = toX(i), y = toY(parseFloat(d.y));
@@ -555,7 +563,6 @@
       ctx.lineWidth = 2;
       ctx.stroke();
 
-      // 상태별 컬러 닷 (8x8)
       data.forEach((d, i) => {
         const x = toX(i), y = toY(parseFloat(d.y));
         ctx.fillStyle = fgiColor(parseFloat(d.y));
@@ -565,7 +572,6 @@
       });
     }
 
-    // Scriptable drawGauge 1:1 구현
     function drawGauge(canvasId, val) {
       const cv = getHDContext(canvasId, 320, 180);
       if (!cv) return;
@@ -573,7 +579,6 @@
 
       const cx = W / 2, cy = H - 20, radius = 120, arcThick = 10;
 
-      // 120개 컬러 닷 원호
       for (let i = 0; i < 120; i++) {
         const t = i / 119;
         const angle = Math.PI + t * Math.PI;
@@ -585,7 +590,6 @@
         ctx.fill();
       }
 
-      // 흰색 게이지 바늘 (끝으로 갈수록 뾰족해짐)
       const needleAngle = Math.PI + (val / 100) * Math.PI;
       const needleLen = radius - 8;
       for (let i = 0; i < 35; i++) {
@@ -599,13 +603,11 @@
         ctx.fill();
       }
 
-      // 중심 원형 캡
       ctx.fillStyle = C.p1;
       ctx.beginPath();
       ctx.arc(cx, cy, 8, 0, Math.PI * 2);
       ctx.fill();
 
-      // 바늘 끝 숫자 라벨 (22px Bold)
       const labelDist = radius + 22;
       const lx = cx + Math.cos(needleAngle) * labelDist;
       const ly = cy + Math.sin(needleAngle) * labelDist;
@@ -616,7 +618,6 @@
       ctx.fillText(val.toFixed(0), lx, ly);
     }
 
-    // Scriptable addToken 방식 1:1 토큰 렌더링
     function renderTokens(containerId, sig) {
       const el = document.getElementById(containerId);
       if (!el || !sig) return;
@@ -707,15 +708,12 @@
         document.getElementById("spx-updated").innerText = formatKSTTime(data.spxTime);
         document.getElementById("qqq-updated").innerText = formatKSTTime(data.qqqTime);
 
-        // SPX ±2.5% 밴드
         drawBandChart("spxChart", data.spx.closes, data.spx.sma, 0.025, 0.025);
         renderTokens("spx-info", data.spx.sig);
 
-        // QQQ ±2.0% 밴드
         drawBandChart("qqqChart", data.qqq.closes, data.qqq.sma, 0.02, 0.02);
         renderTokens("qqq-info", data.qqq.sig);
 
-        // FGI 차트 및 게이지
         drawFGIChart("fgiHistoryChart", data.fgi.data);
         drawGauge("fgiGauge", data.fgi.latestVal);
 
