@@ -1,4 +1,4 @@
-name: Build Android APK with 3 Widgets
+name: Build Android APK with 3 Widgets & Refresh Button
 
 on:
   workflow_dispatch:
@@ -31,26 +31,61 @@ jobs:
           npx cap add android
           npx cap sync android
 
-      - name: Inject 3 Individual Android Widgets
+      - name: Inject Android Widgets with Refresh Button
         run: |
-          # 1. 공통 위젯 레이아웃 XML 생성
+          # 1. 새로고침 아이콘 및 원형 배경 드로어블 생성
+          mkdir -p android/app/src/main/res/drawable
+          cat << 'EOF' > android/app/src/main/res/drawable/ic_refresh.xml
+          <vector xmlns:android="http://schemas.android.com/apk/res/android"
+              android:width="24dp"
+              android:height="24dp"
+              android:viewportWidth="24"
+              android:viewportHeight="24">
+              <path
+                  android:fillColor="#AAAAAA"
+                  android:pathData="M17.65,6.35C16.2,4.9 14.21,4 12,4c-4.42,0 -7.99,3.58 -7.99,8s3.57,8 7.99,8c3.73,0 6.84,-2.55 7.73,-6h-2.08c-0.82,2.33 -3.04,4 -5.65,4 -3.31,0 -6,-2.69 -6,-6s2.69,-6 6,-6c1.66,0 3.14,0.69 4.22,1.78L13,11h7V4l-2.35,2.35z"/>
+          </vector>
+          EOF
+
+          cat << 'EOF' > android/app/src/main/res/drawable/bg_refresh_circle.xml
+          <shape xmlns:android="http://schemas.android.com/apk/res/android"
+              android:shape="oval">
+              <solid android:color="#CC18181A" />
+              <stroke android:width="1dp" android:color="#33FFFFFF" />
+          </shape>
+          EOF
+
+          # 2. 우측 하단 새로고침 버튼이 포함된 위젯 레이아웃 XML 생성
           mkdir -p android/app/src/main/res/layout
           cat << 'EOF' > android/app/src/main/res/layout/spx_widget_layout.xml
           <?xml version="1.0" encoding="utf-8"?>
           <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/widget_root"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:background="#000000">
+
               <ImageView
                   android:id="@+id/widget_image"
                   android:layout_width="match_parent"
                   android:layout_height="match_parent"
                   android:scaleType="fitCenter" />
+
+              <ImageView
+                  android:id="@+id/btn_refresh"
+                  android:layout_width="28dp"
+                  android:layout_height="28dp"
+                  android:layout_alignParentEnd="true"
+                  android:layout_alignParentBottom="true"
+                  android:layout_marginEnd="8dp"
+                  android:layout_marginBottom="8dp"
+                  android:background="@drawable/bg_refresh_circle"
+                  android:padding="5dp"
+                  android:src="@drawable/ic_refresh"
+                  android:contentDescription="새로고침" />
           </RelativeLayout>
           EOF
 
-          # 2. 위젯 3종 메타데이터 XML 생성
+          # 3. 위젯 3종 메타데이터 XML 생성
           mkdir -p android/app/src/main/res/xml
           cat << 'EOF' > android/app/src/main/res/xml/widget_spx_info.xml
           <?xml version="1.0" encoding="utf-8"?>
@@ -85,7 +120,7 @@ jobs:
               android:widgetCategory="home_screen" />
           EOF
 
-          # 3. 위젯 3종 백그라운드 엔진 및 Provider Java 코드 생성
+          # 4. 개별 터치 핸들링(앱 열기 vs 새로고침) BaseProvider Java 코드 생성
           mkdir -p android/app/src/main/java/com/jinwook/spx200
           cat << 'EOF' > android/app/src/main/java/com/jinwook/spx200/BaseWidgetProvider.java
           package com.jinwook.spx200;
@@ -144,11 +179,21 @@ jobs:
                                           RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.spx_widget_layout);
                                           views.setImageViewBitmap(R.id.widget_image, bitmap);
 
-                                          Intent intent = new Intent(context, MainActivity.class);
-                                          PendingIntent pendingIntent = PendingIntent.getActivity(
-                                              context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+                                          // 1. 위젯 배경/차트 터치 시 -> 전체 앱 열기
+                                          Intent appIntent = new Intent(context, MainActivity.class);
+                                          PendingIntent appPendingIntent = PendingIntent.getActivity(
+                                              context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
                                           );
-                                          views.setOnClickPendingIntent(R.id.widget_root, pendingIntent);
+                                          views.setOnClickPendingIntent(R.id.widget_image, appPendingIntent);
+
+                                          // 2. 우측 하단 버튼 터치 시 -> 백그라운드 실시간 갱신
+                                          Intent refreshIntent = new Intent(context, BaseWidgetProvider.this.getClass());
+                                          refreshIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+                                          refreshIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[]{appWidgetId});
+                                          PendingIntent refreshPendingIntent = PendingIntent.getBroadcast(
+                                              context, appWidgetId, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+                                          );
+                                          views.setOnClickPendingIntent(R.id.btn_refresh, refreshPendingIntent);
 
                                           appWidgetManager.updateAppWidget(appWidgetId, views);
                                       } catch (Exception ignored) {}
@@ -193,7 +238,7 @@ jobs:
           }
           EOF
 
-          # 4. AndroidManifest.xml에 3개 위젯 리시버 등록
+          # 5. AndroidManifest.xml에 위젯 리시버 등록
           node -e '
           const fs = require("fs");
           const file = "android/app/src/main/AndroidManifest.xml";
@@ -216,7 +261,7 @@ jobs:
           fs.writeFileSync(file, content);
           '
 
-          # 5. Kotlin 중복 충돌 방지 패치
+          # 6. Kotlin 중복 충돌 방지 패치
           cat << 'EOF' >> android/app/build.gradle
 
           configurations.all {
@@ -234,5 +279,5 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: 200SPX-3Widgets-APK
+          name: 200SPX-with-refresh-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
