@@ -109,16 +109,15 @@ jobs:
                   android:id="@+id/widget_image"
                   android:layout_width="match_parent"
                   android:layout_height="match_parent"
-                  android:scaleType="fitCenter"
-                  android:adjustViewBounds="true" />
+                  android:scaleType="fitCenter" />
               <ImageView
                   android:id="@+id/btn_refresh"
                   android:layout_width="28dp"
                   android:layout_height="28dp"
                   android:layout_alignParentEnd="true"
                   android:layout_alignParentBottom="true"
-                  android:layout_marginEnd="8dp"
-                  android:layout_marginBottom="8dp"
+                  android:layout_marginEnd="6dp"
+                  android:layout_marginBottom="6dp"
                   android:background="@drawable/bg_refresh_circle"
                   android:padding="5dp"
                   android:src="@drawable/ic_refresh"
@@ -198,9 +197,9 @@ jobs:
                           settings.setDomStorageEnabled(true);
                           settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
 
-                          // 위젯 전용 완벽한 1080 x 500 고해상도 규격으로 렌더링
-                          int width = 1080;
-                          int height = 500;
+                          // 안드로이드 위젯 황금비율 표준 규격 (960 x 460)
+                          int width = 960;
+                          int height = 460;
                           webView.measure(
                               View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY),
                               View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY)
@@ -235,7 +234,7 @@ jobs:
 
                                           appWidgetManager.updateAppWidget(appWidgetId, views);
                                       } catch (Exception ignored) {}
-                                  }, 1300);
+                                  }, 1200);
                               }
                           });
 
@@ -315,5 +314,5 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: 200SPX-FullFit-APK
+          name: 200SPX-Fixed-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
