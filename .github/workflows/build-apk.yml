@@ -75,7 +75,7 @@ jobs:
             done
           fi
 
-      - name: Inject Edge-to-Edge 4x2 Android Widgets
+      - name: Inject Responsive Full-Width Android Widgets
         run: |
           mkdir -p android/app/src/main/res/drawable
           cat << 'EOF' > android/app/src/main/res/drawable/ic_refresh.xml
@@ -109,8 +109,7 @@ jobs:
                   android:id="@+id/widget_image"
                   android:layout_width="match_parent"
                   android:layout_height="match_parent"
-                  android:scaleType="fitCenter"
-                  android:adjustViewBounds="true" />
+                  android:scaleType="fitXY" />
               <ImageView
                   android:id="@+id/btn_refresh"
                   android:layout_width="28dp"
@@ -169,8 +168,10 @@ jobs:
           import android.appwidget.AppWidgetProvider;
           import android.content.Context;
           import android.content.Intent;
+          import android.content.res.Configuration;
           import android.graphics.Bitmap;
           import android.graphics.Canvas;
+          import android.os.Bundle;
           import android.os.Handler;
           import android.os.Looper;
           import android.util.DisplayMetrics;
@@ -190,15 +191,40 @@ jobs:
                   }
               }
 
+              @Override
+              public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {
+                  updateAppWidget(context, appWidgetManager, appWidgetId);
+                  super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
+              }
+
               private void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
                   new Handler(Looper.getMainLooper()).post(() -> {
                       try {
+                          Bundle options = appWidgetManager.getAppWidgetOptions(appWidgetId);
                           DisplayMetrics dm = context.getResources().getDisplayMetrics();
                           
-                          // 4x2 최적화 풀-와이드 해상도 비율 (430 x 180)
-                          float scaleFactor = Math.max(dm.density * 1.35f, 3.5f);
-                          int widthPx = (int) (430 * scaleFactor);
-                          int heightPx = (int) (180 * scaleFactor);
+                          int widthDp = 460;
+                          int heightDp = 180;
+                          
+                          if (options != null) {
+                              int orientation = context.getResources().getConfiguration().orientation;
+                              if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                                  int w = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, 0);
+                                  int h = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 0);
+                                  if (w > 0) widthDp = w;
+                                  if (h > 0) heightDp = h;
+                              } else {
+                                  int w = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 0);
+                                  int h = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 0);
+                                  if (w > 0) widthDp = w;
+                                  if (h > 0) heightDp = h;
+                              }
+                          }
+
+                          // 5x2, 4x2 등 실제 위젯 비율에 맞춘 3.5배 초고화질 해상도 자동 산출
+                          float scale = Math.max(dm.density * 1.35f, 3.5f);
+                          int widthPx = Math.max((int) (widthDp * scale), 900);
+                          int heightPx = Math.max((int) (heightDp * scale), 360);
 
                           WebView webView = new WebView(context.getApplicationContext());
                           WebSettings settings = webView.getSettings();
@@ -321,5 +347,5 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: 200SPX-WideFit-APK
+          name: 200SPX-AutoFit-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
