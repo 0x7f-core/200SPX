@@ -1,4 +1,4 @@
-name: Build Android APK with Widget
+name: Build Android APK with 3 Widgets
 
 on:
   workflow_dispatch:
@@ -31,9 +31,9 @@ jobs:
           npx cap add android
           npx cap sync android
 
-      - name: Inject Native Android Widget Code
+      - name: Inject 3 Individual Android Widgets
         run: |
-          # 1. 위젯 레이아웃 XML 생성
+          # 1. 공통 위젯 레이아웃 XML 생성
           mkdir -p android/app/src/main/res/layout
           cat << 'EOF' > android/app/src/main/res/layout/spx_widget_layout.xml
           <?xml version="1.0" encoding="utf-8"?>
@@ -50,22 +50,44 @@ jobs:
           </RelativeLayout>
           EOF
 
-          # 2. 위젯 메타데이터 XML 생성
+          # 2. 위젯 3종 메타데이터 XML 생성
           mkdir -p android/app/src/main/res/xml
-          cat << 'EOF' > android/app/src/main/res/xml/spx_widget_info.xml
+          cat << 'EOF' > android/app/src/main/res/xml/widget_spx_info.xml
           <?xml version="1.0" encoding="utf-8"?>
           <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
               android:minWidth="250dp"
-              android:minHeight="140dp"
+              android:minHeight="110dp"
               android:updatePeriodMillis="1800000"
               android:initialLayout="@layout/spx_widget_layout"
               android:resizeMode="horizontal|vertical"
               android:widgetCategory="home_screen" />
           EOF
 
-          # 3. 백그라운드 웹 스냅샷 AppWidgetProvider Java 코드 생성
+          cat << 'EOF' > android/app/src/main/res/xml/widget_qqq_info.xml
+          <?xml version="1.0" encoding="utf-8"?>
+          <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+              android:minWidth="250dp"
+              android:minHeight="110dp"
+              android:updatePeriodMillis="1800000"
+              android:initialLayout="@layout/spx_widget_layout"
+              android:resizeMode="horizontal|vertical"
+              android:widgetCategory="home_screen" />
+          EOF
+
+          cat << 'EOF' > android/app/src/main/res/xml/widget_fgi_info.xml
+          <?xml version="1.0" encoding="utf-8"?>
+          <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+              android:minWidth="250dp"
+              android:minHeight="110dp"
+              android:updatePeriodMillis="1800000"
+              android:initialLayout="@layout/spx_widget_layout"
+              android:resizeMode="horizontal|vertical"
+              android:widgetCategory="home_screen" />
+          EOF
+
+          # 3. 위젯 3종 백그라운드 엔진 및 Provider Java 코드 생성
           mkdir -p android/app/src/main/java/com/jinwook/spx200
-          cat << 'EOF' > android/app/src/main/java/com/jinwook/spx200/SPXWidgetProvider.java
+          cat << 'EOF' > android/app/src/main/java/com/jinwook/spx200/BaseWidgetProvider.java
           package com.jinwook.spx200;
 
           import android.app.PendingIntent;
@@ -83,7 +105,8 @@ jobs:
           import android.webkit.WebViewClient;
           import android.widget.RemoteViews;
 
-          public class SPXWidgetProvider extends AppWidgetProvider {
+          public abstract class BaseWidgetProvider extends AppWidgetProvider {
+              protected abstract String getUrl();
 
               @Override
               public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -102,7 +125,7 @@ jobs:
                           settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
 
                           int width = 1080;
-                          int height = 700;
+                          int height = 460;
                           webView.measure(
                               View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY),
                               View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY)
@@ -121,7 +144,6 @@ jobs:
                                           RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.spx_widget_layout);
                                           views.setImageViewBitmap(R.id.widget_image, bitmap);
 
-                                          // 위젯 터치 시 앱 실행
                                           Intent intent = new Intent(context, MainActivity.class);
                                           PendingIntent pendingIntent = PendingIntent.getActivity(
                                               context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
@@ -134,25 +156,67 @@ jobs:
                               }
                           });
 
-                          webView.loadUrl("https://jinwook0904.github.io/200SPX/");
+                          webView.loadUrl(getUrl());
                       } catch (Exception ignored) {}
                   });
               }
           }
           EOF
 
-          # 4. AndroidManifest.xml에 위젯 리시버 등록
-          sed -i '/<\/application>/i \
-                  <receiver android:name=".SPXWidgetProvider" android:exported="true"> \
-                      <intent-filter> \
-                          <action android:name="android.appwidget.action.APPWIDGET_UPDATE" /> \
-                      </intent-filter> \
-                      <meta-data \
-                          android:name="android.appwidget.provider" \
-                          android:resource="@xml/spx_widget_info" /> \
-                  </receiver>' android/app/src/main/AndroidManifest.xml
+          cat << 'EOF' > android/app/src/main/java/com/jinwook/spx200/SPXWidgetProvider.java
+          package com.jinwook.spx200;
+          public class SPXWidgetProvider extends BaseWidgetProvider {
+              @Override
+              protected String getUrl() {
+                  return "https://jinwook0904.github.io/200SPX/?v=spx";
+              }
+          }
+          EOF
 
-          # 5. Kotlin 라이브러리 중복 충돌 방지 패치
+          cat << 'EOF' > android/app/src/main/java/com/jinwook/spx200/QQQWidgetProvider.java
+          package com.jinwook.spx200;
+          public class QQQWidgetProvider extends BaseWidgetProvider {
+              @Override
+              protected String getUrl() {
+                  return "https://jinwook0904.github.io/200SPX/?v=qqq";
+              }
+          }
+          EOF
+
+          cat << 'EOF' > android/app/src/main/java/com/jinwook/spx200/FGIWidgetProvider.java
+          package com.jinwook.spx200;
+          public class FGIWidgetProvider extends BaseWidgetProvider {
+              @Override
+              protected String getUrl() {
+                  return "https://jinwook0904.github.io/200SPX/?v=fgi";
+              }
+          }
+          EOF
+
+          # 4. AndroidManifest.xml에 3개 위젯 리시버 등록
+          node -e '
+          const fs = require("fs");
+          const file = "android/app/src/main/AndroidManifest.xml";
+          let content = fs.readFileSync(file, "utf8");
+          const receivers = `
+                  <receiver android:name=".SPXWidgetProvider" android:label="200슨피단 (SPX)" android:exported="true">
+                      <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+                      <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_spx_info" />
+                  </receiver>
+                  <receiver android:name=".QQQWidgetProvider" android:label="200큐큐단 (QQQ)" android:exported="true">
+                      <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+                      <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_qqq_info" />
+                  </receiver>
+                  <receiver android:name=".FGIWidgetProvider" android:label="공포와 탐욕 지수 (CNN FGI)" android:exported="true">
+                      <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+                      <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_fgi_info" />
+                  </receiver>
+          `;
+          content = content.replace("</application>", receivers + "\n    </application>");
+          fs.writeFileSync(file, content);
+          '
+
+          # 5. Kotlin 중복 충돌 방지 패치
           cat << 'EOF' >> android/app/build.gradle
 
           configurations.all {
@@ -170,5 +234,5 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: 200SPX-app-with-widget
+          name: 200SPX-3Widgets-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
