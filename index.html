@@ -85,10 +85,10 @@
     }
 
     /* =============================================================================
-       1. 일반 웹 / 메인 앱 전체화면 모드 (원래 비율 원복: 세로 1열 컴팩트 레이아웃)
+       1. 일반 웹 / 태블릿 / PC 대시보드 모드
        ============================================================================= */
     html:not(.is-widget) body {
-      padding: calc(14px + env(safe-area-inset-top)) 14px calc(24px + env(safe-area-inset-bottom)) 14px;
+      padding: calc(14px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom)) 16px;
       overflow-y: auto;
       display: flex;
       justify-content: center;
@@ -96,18 +96,28 @@
 
     html:not(.is-widget) .widget-container {
       width: 100%;
-      max-width: 480px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
+      max-width: 1200px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
       margin: 0 auto;
     }
 
+    @media (min-width: 768px) {
+      html:not(.is-widget) .widget-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+      }
+      html:not(.is-widget) #card-fgi,
+      html:not(.is-widget) .btn-wrap {
+        grid-column: span 2;
+      }
+    }
+
     html:not(.is-widget) .card {
-      width: 100%;
       background: var(--card-bg);
       border-radius: 20px;
-      padding: 14px 16px;
+      padding: 16px 20px;
       border: 1px solid var(--card-border);
       display: flex;
       flex-direction: column;
@@ -118,12 +128,12 @@
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      margin-bottom: 2px;
+      margin-bottom: 4px;
     }
 
     html:not(.is-widget) .title,
     html:not(.is-widget) .fgi-header {
-      font-size: 16px;
+      font-size: 16.5px;
       font-weight: 600;
       letter-spacing: -0.4px;
     }
@@ -135,9 +145,9 @@
     }
 
     html:not(.is-widget) .updated-time {
-      font-size: 10.5px;
+      font-size: 11px;
       font-weight: 400;
-      margin-bottom: 8px;
+      margin-bottom: 12px;
       letter-spacing: -0.2px;
       color: var(--p1);
     }
@@ -146,8 +156,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      width: 100%;
+      gap: 16px;
       flex: 1;
     }
 
@@ -165,8 +174,8 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      gap: 3px;
-      padding-left: 4px;
+      gap: 4px;
+      padding-left: 6px;
     }
 
     html:not(.is-widget) .fgi-info-box {
@@ -177,41 +186,41 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      gap: 3px;
+      gap: 4px;
     }
 
     html:not(.is-widget) .sig-row {
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 600;
       line-height: 1.25;
-      letter-spacing: -0.2px;
+      letter-spacing: -0.3px;
     }
 
     html:not(.is-widget) .status-text {
-      font-size: 10.5px;
+      font-size: 11.5px;
       color: var(--status-p);
       font-weight: 400;
       margin-top: 3px;
     }
 
     html:not(.is-widget) .dd-text {
-      font-size: 11.5px;
+      font-size: 12.5px;
       font-weight: 600;
       margin-top: 4px;
     }
 
     html:not(.is-widget) .fgi-rating {
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 600;
       margin-top: 2px;
     }
 
     html:not(.is-widget) .fgi-stats {
-      font-size: 13px;
+      font-size: 13.5px;
       font-weight: 500;
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
     }
 
     html:not(.is-widget) .btn-wrap { width: 100%; }
@@ -220,9 +229,9 @@
       background: #141416;
       border: 1px solid var(--divider);
       color: var(--p2);
-      padding: 13px;
+      padding: 14px;
       border-radius: 16px;
-      font-size: 13.5px;
+      font-size: 14px;
       font-weight: 600;
       cursor: pointer;
       transition: background 0.15s ease;
@@ -266,6 +275,7 @@
       background: var(--card-bg);
     }
 
+    /* 상단 제목 헤더 행 */
     html.is-widget .card-header {
       display: flex;
       justify-content: space-between;
@@ -290,7 +300,7 @@
       white-space: nowrap;
     }
 
-    /* 위젯 전용: 상단 2줄(제목과 날짜) 사이를 시원하게 띄우는 여백 */
+    /* 위젯 전용: 제목과 날짜 사이를 시원하게 띄우는 여백 설정 */
     html.is-widget .updated-time {
       font-size: min(2.85vw, 6.0vh);
       font-weight: 400;
