@@ -371,7 +371,7 @@
     body.is-widget .updated-time {
       font-size: min(2.9vw, 6.2vh) !important;
       margin-bottom: 0.8vh !important;
-      color: #FFFFFF !important;
+      color: #FFFFFF;
       line-height: 1.1 !important;
       white-space: nowrap !important;
     }
@@ -389,8 +389,7 @@
     body.is-widget .chart-box {
       flex: 1.05 !important;
       height: 100% !important;
-      display: flex !important;
-      align-items: center !important;
+      display: flex !align-items: center !important;
       justify-content: center !important;
       min-width: 0 !important;
     }
@@ -537,12 +536,13 @@
     </div>
 
     <div class="btn-wrap">
-      <button class="refresh-btn" id="btn-refresh" onclick="loadDashboard()">새로고침</button>
+      <button class="refresh-btn" id="btn-refresh" onclick="loadDashboard(true)">새로고침</button>
     </div>
   </div>
 
   <script>
     const WORKER_URL = "https://spx-indicator-api.jinwook0904.workers.dev";
+    const CACHE_KEY = "SPX_INDICATOR_CACHE_V2";
 
     const C = {
       bg: "#000000",
@@ -573,6 +573,13 @@
     const viewParam = urlParams.get('v');
     if (viewParam) {
       document.body.classList.add('is-widget', `view-${viewParam}`);
+    }
+
+    function notifyAndroidReady() {
+      // 그리기 완료 즉시 안드로이드 네이티브에 캡처 트리거 전송
+      if (window.AndroidBridge && typeof window.AndroidBridge.onRenderComplete === 'function') {
+        window.AndroidBridge.onRenderComplete();
+      }
     }
 
     function getHDContext(canvasId, logicalW, logicalH) {
@@ -779,60 +786,81 @@
       el.innerHTML = html;
     }
 
-    async function loadDashboard() {
-      const loader = document.getElementById("loader");
-      const mainView = document.getElementById("main-view");
-      loader.style.display = "flex";
-      mainView.style.display = "none";
+    function renderDashboardUI(data) {
+      const formatKSTTime = (ts) => {
+        const d = new Date(ts * 1000);
+        const kst = new Date(d.toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
+        const yy = String(kst.getFullYear()).slice(-2);
+        const mm = String(kst.getMonth() + 1).padStart(2, '0');
+        const dd = String(kst.getDate()).padStart(2, '0');
+        const hh = String(kst.getHours()).padStart(2, '0');
+        const min = String(kst.getMinutes()).padStart(2, '0');
+        return `${yy}.${mm}.${dd}. ${hh}:${min} 기준`;
+      };
 
+      if (data.version) {
+        document.getElementById("spx-ver").innerText = data.version;
+        document.getElementById("qqq-ver").innerText = data.version;
+      }
+
+      document.getElementById("spx-updated").innerText = formatKSTTime(data.spxTime);
+      document.getElementById("qqq-updated").innerText = formatKSTTime(data.qqqTime);
+
+      drawBandChart("spxChart", data.spx.closes, data.spx.sma, 0.025, 0.025);
+      renderTokens("spx-info", data.spx.sig);
+
+      drawBandChart("qqqChart", data.qqq.closes, data.qqq.sma, 0.02, 0.02);
+      renderTokens("qqq-info", data.qqq.sig);
+
+      drawFGIChart("fgiHistoryChart", data.fgi.data);
+      drawGauge("fgiGauge", data.fgi.latestVal);
+
+      const ratingEl = document.getElementById("fgi-rating-text");
+      ratingEl.innerText = translateRating(data.fgi.latestRating);
+      ratingEl.style.color = fgiColor(data.fgi.latestVal);
+
+      const statsEl = document.getElementById("fgi-stats-text");
+      statsEl.innerHTML = `
+        <span style="color: ${fgiColor(data.fgi.latestVal)}">현재 ${data.fgi.latestVal.toFixed(0)}</span>
+        <span class="fgi-slash"> / </span>
+        <span style="color: ${fgiColor(data.fgi.avg30)}">30일 평균 ${data.fgi.avg30.toFixed(0)}</span>
+      `;
+
+      document.getElementById("loader").style.display = "none";
+      document.getElementById("main-view").style.display = "";
+
+      notifyAndroidReady();
+    }
+
+    async function loadDashboard(forceRefresh = false) {
+      // 1. 로컬 캐시 즉시 렌더링 (0.02초 Instant Render)
+      const cached = localStorage.getItem(CACHE_KEY);
+      let hasRenderedCache = false;
+      if (cached && !forceRefresh) {
+        try {
+          const cachedData = JSON.parse(cached);
+          renderDashboardUI(cachedData);
+          hasRenderedCache = true;
+        } catch (e) {}
+      }
+
+      if (!hasRenderedCache) {
+        document.getElementById("loader").style.display = "flex";
+        document.getElementById("main-view").style.display = "none";
+      }
+
+      // 2. 백그라운드 실시간 동기화
       try {
         const res = await fetch(WORKER_URL);
-        if (!res.ok) throw new Error("지표 데이터를 가져올 수 없습니다.");
-        const data = await res.json();
-
-        const formatKSTTime = (ts) => {
-          const d = new Date(ts * 1000);
-          const kst = new Date(d.toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
-          const yy = String(kst.getFullYear()).slice(-2);
-          const mm = String(kst.getMonth() + 1).padStart(2, '0');
-          const dd = String(kst.getDate()).padStart(2, '0');
-          const hh = String(kst.getHours()).padStart(2, '0');
-          const min = String(kst.getMinutes()).padStart(2, '0');
-          return `${yy}.${mm}.${dd}. ${hh}:${min} 기준`;
-        };
-
-        if (data.version) {
-          document.getElementById("spx-ver").innerText = data.version;
-          document.getElementById("qqq-ver").innerText = data.version;
-        }
-
-        document.getElementById("spx-updated").innerText = formatKSTTime(data.spxTime);
-        document.getElementById("qqq-updated").innerText = formatKSTTime(data.qqqTime);
-
-        drawBandChart("spxChart", data.spx.closes, data.spx.sma, 0.025, 0.025);
-        renderTokens("spx-info", data.spx.sig);
-
-        drawBandChart("qqqChart", data.qqq.closes, data.qqq.sma, 0.02, 0.02);
-        renderTokens("qqq-info", data.qqq.sig);
-
-        drawFGIChart("fgiHistoryChart", data.fgi.data);
-        drawGauge("fgiGauge", data.fgi.latestVal);
-
-        const ratingEl = document.getElementById("fgi-rating-text");
-        ratingEl.innerText = translateRating(data.fgi.latestRating);
-        ratingEl.style.color = fgiColor(data.fgi.latestVal);
-
-        const statsEl = document.getElementById("fgi-stats-text");
-        statsEl.innerHTML = `
-          <span style="color: ${fgiColor(data.fgi.latestVal)}">현재 ${data.fgi.latestVal.toFixed(0)}</span>
-          <span class="fgi-slash"> / </span>
-          <span style="color: ${fgiColor(data.fgi.avg30)}">30일 평균 ${data.fgi.avg30.toFixed(0)}</span>
-        `;
-
-        loader.style.display = "none";
-        mainView.style.display = "";
+        if (!res.ok) throw new Error("데이터 수신 실패");
+        const freshData = await res.json();
+        
+        localStorage.setItem(CACHE_KEY, JSON.stringify(freshData));
+        renderDashboardUI(freshData);
       } catch (err) {
-        loader.innerText = "오류: " + err.message;
+        if (!hasRenderedCache) {
+          document.getElementById("loader").innerText = "오류: " + err.message;
+        }
       }
     }
 
