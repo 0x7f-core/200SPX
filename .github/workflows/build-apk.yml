@@ -178,7 +178,6 @@ jobs:
           import android.webkit.JavascriptInterface;
           import android.webkit.WebSettings;
           import android.webkit.WebView;
-          import android.webkit.WebViewClient;
           import android.widget.RemoteViews;
 
           public abstract class BaseWidgetProvider extends AppWidgetProvider {
@@ -186,15 +185,13 @@ jobs:
 
               @Override
               public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-                  for (int appWidgetId : appWidgetIds) {
-                      updateAppWidget(context, appWidgetManager, appWidgetId);
-                  }
+                  for (int id : appWidgetIds) updateAppWidget(context, appWidgetManager, id);
               }
 
               @Override
-              public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {
-                  updateAppWidget(context, appWidgetManager, appWidgetId);
-                  super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
+              public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int id, Bundle options) {
+                  updateAppWidget(context, appWidgetManager, id);
+                  super.onAppWidgetOptionsChanged(context, appWidgetManager, id, options);
               }
 
               private void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
@@ -203,21 +200,17 @@ jobs:
                           Bundle options = appWidgetManager.getAppWidgetOptions(appWidgetId);
                           DisplayMetrics dm = context.getResources().getDisplayMetrics();
                           
-                          int widthDp = 460;
-                          int heightDp = 180;
-                          
+                          int widthDp = 460, heightDp = 180;
                           if (options != null) {
                               int orientation = context.getResources().getConfiguration().orientation;
                               if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
                                   int w = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, 0);
                                   int h = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 0);
-                                  if (w > 0) widthDp = w;
-                                  if (h > 0) heightDp = h;
+                                  if (w > 0) widthDp = w; if (h > 0) heightDp = h;
                               } else {
                                   int w = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 0);
                                   int h = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 0);
-                                  if (w > 0) widthDp = w;
-                                  if (h > 0) heightDp = h;
+                                  if (w > 0) widthDp = w; if (h > 0) heightDp = h;
                               }
                           }
 
@@ -252,18 +245,18 @@ jobs:
                                   views.setImageViewBitmap(R.id.widget_image, bitmap);
 
                                   Intent appIntent = new Intent(context, MainActivity.class);
-                                  PendingIntent appPendingIntent = PendingIntent.getActivity(
-                                      context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+                                  views.setOnClickPendingIntent(
+                                      R.id.widget_image,
+                                      PendingIntent.getActivity(context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE)
                                   );
-                                  views.setOnClickPendingIntent(R.id.widget_image, appPendingIntent);
 
                                   Intent refreshIntent = new Intent(context, BaseWidgetProvider.this.getClass());
                                   refreshIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
                                   refreshIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[]{appWidgetId});
-                                  PendingIntent refreshPendingIntent = PendingIntent.getBroadcast(
-                                      context, appWidgetId, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+                                  views.setOnClickPendingIntent(
+                                      R.id.btn_refresh,
+                                      PendingIntent.getBroadcast(context, appWidgetId, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE)
                                   );
-                                  views.setOnClickPendingIntent(R.id.btn_refresh, refreshPendingIntent);
 
                                   appWidgetManager.updateAppWidget(appWidgetId, views);
                               } catch (Exception ignored) {}
@@ -272,12 +265,11 @@ jobs:
                           webView.addJavascriptInterface(new Object() {
                               @JavascriptInterface
                               public void onRenderComplete() {
-                                  new Handler(Looper.getMainLooper()).postDelayed(doCapture, 40);
+                                  new Handler(Looper.getMainLooper()).postDelayed(doCapture, 30);
                               }
                           }, "AndroidBridge");
 
-                          new Handler(Looper.getMainLooper()).postDelayed(doCapture, 2200);
-
+                          new Handler(Looper.getMainLooper()).postDelayed(doCapture, 2000);
                           webView.loadUrl(getUrl());
                       } catch (Exception ignored) {}
                   });
