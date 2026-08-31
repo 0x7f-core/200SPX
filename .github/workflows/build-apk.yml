@@ -75,7 +75,7 @@ jobs:
             done
           fi
 
-      - name: Inject Responsive Full-Width Android Widgets
+      - name: Inject Responsive Android Widgets
         run: |
           mkdir -p android/app/src/main/res/drawable
           cat << 'EOF' > android/app/src/main/res/drawable/ic_refresh.xml
@@ -221,12 +221,15 @@ jobs:
                               }
                           }
 
-                          // 5x2, 4x2 등 실제 위젯 비율에 맞춘 3.5배 초고화질 해상도 자동 산출
                           float scale = Math.max(dm.density * 1.35f, 3.5f);
                           int widthPx = Math.max((int) (widthDp * scale), 900);
                           int heightPx = Math.max((int) (heightDp * scale), 360);
 
                           WebView webView = new WebView(context.getApplicationContext());
+                          // 1. 웹뷰 기본 배경을 블랙으로 강제 (흰색 화면 깜빡임/캡처 방지)
+                          webView.setBackgroundColor(0xFF000000);
+                          webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+
                           WebSettings settings = webView.getSettings();
                           settings.setJavaScriptEnabled(true);
                           settings.setDomStorageEnabled(true);
@@ -267,7 +270,7 @@ jobs:
 
                                           appWidgetManager.updateAppWidget(appWidgetId, views);
                                       } catch (Exception ignored) {}
-                                  }, 1300);
+                                  }, 1400);
                               }
                           });
 
@@ -347,5 +350,5 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: 200SPX-AutoFit-APK
+          name: 200SPX-Fixed-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
