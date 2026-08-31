@@ -239,7 +239,7 @@
     html:not(.is-widget) .refresh-btn:active { background: #222226; color: var(--p1); }
 
     /* =============================================================================
-       2. 안드로이드 홈 화면 위젯 전용 모드 (html.is-widget)
+       2. 안드로이드 홈 화면 위젯 전용 모드 (html.is-widget) - 원본 비율 정밀 매칭
        ============================================================================= */
     html.is-widget body {
       padding: 2.0vh 2.6vw;
@@ -258,7 +258,7 @@
 
     html.is-widget .btn-wrap { display: none !important; }
 
-    /* 요청된 뷰만 남기고 완벽 격리 */
+    /* 요청된 뷰만 남기고 격리 */
     html.view-spx #card-qqq, html.view-spx #card-fgi { display: none !important; }
     html.view-qqq #card-spx, html.view-qqq #card-fgi { display: none !important; }
     html.view-fgi #card-spx, html.view-fgi #card-qqq { display: none !important; }
@@ -275,7 +275,6 @@
       background: var(--card-bg);
     }
 
-    /* 상단 제목 헤더 행 */
     html.is-widget .card-header {
       display: flex;
       justify-content: space-between;
@@ -286,26 +285,25 @@
 
     html.is-widget .title,
     html.is-widget .fgi-header {
-      font-size: min(4.4vw, 9.4vh);
+      font-size: min(4.0vw, 8.5vh);
       font-weight: 600;
-      letter-spacing: -0.4px;
+      letter-spacing: -0.35px;
       white-space: nowrap;
       line-height: 1.15;
     }
 
     html.is-widget .version {
-      font-size: min(2.6vw, 5.5vh);
+      font-size: min(2.4vw, 5.0vh);
       color: #7c7c80;
       font-weight: 400;
       white-space: nowrap;
     }
 
-    /* 위젯 전용: 제목과 날짜 사이를 시원하게 띄우는 여백 설정 */
     html.is-widget .updated-time {
-      font-size: min(2.85vw, 6.0vh);
+      font-size: min(2.6vw, 5.4vh);
       font-weight: 400;
-      margin-top: 0.8vh !important;
-      margin-bottom: 1.4vh !important;
+      margin-top: 0.6vh !important;
+      margin-bottom: 1.2vh !important;
       color: #FFFFFF;
       white-space: nowrap;
       line-height: 1.15;
@@ -316,7 +314,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 2.0vw;
+      gap: 2.2vw;
       min-height: 0;
     }
 
@@ -340,9 +338,9 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      gap: 0.6vh;
+      gap: 0.5vh;
       min-width: 0;
-      padding-left: 0.5vw;
+      padding-left: 0.4vw;
     }
 
     html.is-widget .fgi-info-box {
@@ -352,7 +350,7 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      gap: 0.5vh;
+      gap: 0.4vh;
       min-width: 0;
     }
 
@@ -362,46 +360,50 @@
       max-width: 100%;
     }
 
+    /* 메인 시그널 폰트 크기 슬림화 (스크립테이블 매칭) */
     html.is-widget .sig-row {
-      font-size: min(4.6vw, 9.8vh);
+      font-size: min(3.9vw, 8.3vh);
       font-weight: 600;
-      line-height: 1.2;
+      line-height: 1.25;
       white-space: nowrap;
-      letter-spacing: -0.3px;
+      letter-spacing: -0.25px;
     }
 
-    html.is-widget .token-action { margin-left: 1.0vw; }
+    html.is-widget .token-action { margin-left: 0.8vw; }
 
+    /* 상태 텍스트 크기 정돈 */
     html.is-widget .status-text {
-      font-size: min(2.95vw, 6.2vh);
+      font-size: min(2.55vw, 5.3vh);
       color: #9a9aa0;
       font-weight: 400;
-      margin-top: 0.4vh;
+      margin-top: 0.3vh;
       white-space: nowrap;
-      letter-spacing: -0.35px;
+      letter-spacing: -0.25px;
     }
 
+    /* 최고점 대비 낙폭 폰트 크기 정돈 */
     html.is-widget .dd-text {
-      font-size: min(3.4vw, 7.4vh);
+      font-size: min(2.9vw, 6.2vh);
       font-weight: 600;
-      margin-top: 0.5vh;
+      color: #FFFFFF;
+      margin-top: 0.4vh;
       white-space: nowrap;
-      letter-spacing: -0.3px;
+      letter-spacing: -0.25px;
     }
 
     html.is-widget .fgi-rating {
-      font-size: min(4.5vw, 9.4vh);
+      font-size: min(3.9vw, 8.2vh);
       font-weight: 600;
       margin-top: 0.3vh;
       white-space: nowrap;
     }
 
     html.is-widget .fgi-stats {
-      font-size: min(3.4vw, 7.2vh);
+      font-size: min(2.9vw, 6.2vh);
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 1.5vw;
+      gap: 1.2vw;
       white-space: nowrap;
       font-weight: 500;
     }
