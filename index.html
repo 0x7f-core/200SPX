@@ -37,15 +37,60 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    html, body {
+      width: 100%;
+      height: 100%;
+    }
+
     body {
       background-color: var(--bg);
       color: var(--p1);
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Roboto", sans-serif;
       padding: calc(8px + env(safe-area-inset-top)) 10px calc(8px + env(safe-area-inset-bottom)) 10px;
-      width: 100%;
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
       user-select: none;
+    }
+
+    /* 위젯 모드 전용 반응형 풀-핏 스타일 */
+    body.is-widget {
+      padding: 4px;
+      height: 100vh;
+      min-height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    body.is-widget .widget-container {
+      height: 100%;
+      gap: 0;
+    }
+
+    body.is-widget .card {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 8px 12px;
+      border-radius: 14px;
+      box-shadow: none;
+    }
+
+    body.is-widget .content-row {
+      flex: 1;
+      min-height: 0;
+    }
+
+    body.is-widget .chart-box {
+      height: 100%;
+    }
+
+    body.is-widget .chart-box canvas {
+      max-height: 100%;
+      width: auto;
+      max-width: 100%;
+      object-fit: contain;
     }
 
     .widget-container {
@@ -71,7 +116,7 @@
     }
 
     .title {
-      font-size: 16px;
+      font-size: clamp(14px, 3.8vw, 17px);
       font-weight: 700;
       text-decoration: none;
       color: var(--p1);
@@ -79,13 +124,13 @@
     }
 
     .version {
-      font-size: 8px;
+      font-size: clamp(8px, 2vw, 10px);
       color: var(--p2);
       font-weight: 400;
     }
 
     .updated-time {
-      font-size: 10px;
+      font-size: clamp(9px, 2.4vw, 11px);
       color: var(--p1);
       margin-bottom: 6px;
       font-weight: 400;
@@ -100,7 +145,7 @@
     }
 
     .chart-box {
-      flex: 1;
+      flex: 1.1;
       min-width: 0;
       display: flex;
       align-items: center;
@@ -112,6 +157,7 @@
       min-width: 0;
       display: flex;
       flex-direction: column;
+      justify-content: center;
       gap: 3px;
     }
 
@@ -122,7 +168,7 @@
     }
 
     .sig-row {
-      font-size: 14px;
+      font-size: clamp(13px, 3.4vw, 16px);
       font-weight: 700;
       line-height: 1.25;
       display: flex;
@@ -138,20 +184,20 @@
     .token-alert  { color: var(--alert); }
 
     .status-text {
-      font-size: 10px;
+      font-size: clamp(10px, 2.6vw, 12px);
       margin-top: 2px;
       font-weight: 400;
     }
 
     .dd-text {
-      font-size: 11px;
+      font-size: clamp(11px, 2.8vw, 13px);
       font-weight: 500;
       color: var(--p1);
       margin-top: 3px;
     }
 
     .fgi-header {
-      font-size: 16px;
+      font-size: clamp(14px, 3.8vw, 17px);
       font-weight: 700;
       margin-bottom: 4px;
       text-decoration: none;
@@ -171,13 +217,13 @@
     }
 
     .fgi-rating {
-      font-size: 15px;
+      font-size: clamp(13px, 3.4vw, 16px);
       font-weight: 700;
       margin-top: 2px;
     }
 
     .fgi-stats {
-      font-size: 13px;
+      font-size: clamp(11px, 2.8vw, 14px);
       font-weight: 500;
       margin-top: 3px;
       display: flex;
@@ -189,7 +235,6 @@
     .fgi-slash {
       color: var(--slash);
       font-weight: 700;
-      font-size: 15px;
     }
 
     .loading-wrap {
@@ -459,7 +504,7 @@
       ctx.fillText(val.toFixed(0), lx, ly);
     }
 
-    function renderTokens(containerId, sig, fontSize = 14) {
+    function renderTokens(containerId, sig) {
       const el = document.getElementById(containerId);
       if (!el || !sig) return;
 
@@ -481,7 +526,7 @@
           }
         });
 
-        html += `<div class="sig-row" style="font-size: ${fontSize}px">${tokensHtml}</div>`;
+        html += `<div class="sig-row">${tokensHtml}</div>`;
       });
 
       html += `
@@ -499,6 +544,10 @@
       const cardQqq = document.getElementById('card-qqq');
       const cardFgi = document.getElementById('card-fgi');
       const btnRefresh = document.getElementById('btn-refresh');
+
+      if (view) {
+        document.body.classList.add('is-widget');
+      }
 
       if (view === 'spx') {
         cardQqq.style.display = 'none';
@@ -526,7 +575,6 @@
         if (!res.ok) throw new Error("지표 데이터를 가져올 수 없습니다.");
         const data = await res.json();
 
-        // 한국 표준시(KST) 기준 포맷 (yy.MM.dd. HH:mm 기준)
         const formatKSTTime = (ts) => {
           const d = new Date(ts * 1000);
           const kst = new Date(d.toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
@@ -547,10 +595,10 @@
         document.getElementById("qqq-updated").innerText = formatKSTTime(data.qqqTime);
 
         drawBandChart("spxChart", data.spx.closes, data.spx.sma, data.spx.upB, data.spx.dnB);
-        renderTokens("spx-info", data.spx.sig, 14);
+        renderTokens("spx-info", data.spx.sig);
 
         drawBandChart("qqqChart", data.qqq.closes, data.qqq.sma, data.qqq.upB, data.qqq.dnB);
-        renderTokens("qqq-info", data.qqq.sig, 15);
+        renderTokens("qqq-info", data.qqq.sig);
 
         drawFGIChart("fgiHistoryChart", data.fgi.data);
         drawGauge("fgiGauge", data.fgi.latestVal);
