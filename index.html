@@ -270,7 +270,7 @@
     }
 
     /* =============================================================================
-       2. 안드로이드 홈 위젯 전용 뷰포트 (body.is-widget) - 100% 꽉 차고 단일 카드 고정
+       2. 안드로이드 홈 위젯 전용 뷰포트 (body.is-widget)
        ============================================================================= */
     body.is-widget {
       width: 100vw !important;
@@ -295,9 +295,29 @@
       flex-direction: column !important;
       gap: 0 !important;
       padding: 0 !important;
-      grid-template-columns: none !important;
     }
 
+    body.is-widget .btn-wrap {
+      display: none !important;
+    }
+
+    /* 위젯별 격리: 요청된 1개 카드 외에는 완전 숨김 강제 */
+    body.view-spx #card-qqq,
+    body.view-spx #card-fgi {
+      display: none !important;
+    }
+
+    body.view-qqq #card-spx,
+    body.view-qqq #card-fgi {
+      display: none !important;
+    }
+
+    body.view-fgi #card-spx,
+    body.view-fgi #card-qqq {
+      display: none !important;
+    }
+
+    /* 화면에 남은 단 1개의 위젯 카드가 전체 크기 차지 */
     body.is-widget .card {
       width: 100% !important;
       height: 100% !important;
@@ -522,6 +542,13 @@
       extremeGreed: "#b07cc0"
     };
 
+    // 진입 즉시 URL 파라미터 감지하여 클래스 주입 (깜빡임 및 동시 출력 완벽 방지)
+    const urlParams = new URLSearchParams(window.location.search);
+    const viewParam = urlParams.get('v');
+    if (viewParam) {
+      document.body.classList.add('is-widget', `view-${viewParam}`);
+    }
+
     // 3배 슈퍼샘플링 캔버스 컨텍스트
     function getHDContext(canvasId, logicalW, logicalH) {
       const cvs = document.getElementById(canvasId);
@@ -731,31 +758,6 @@
       el.innerHTML = html;
     }
 
-    function applyViewFilter() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const view = urlParams.get('v');
-
-      const cardSpx = document.getElementById('card-spx');
-      const cardQqq = document.getElementById('card-qqq');
-      const cardFgi = document.getElementById('card-fgi');
-      const btnWrap = document.querySelector('.btn-wrap');
-
-      if (view) {
-        document.body.classList.add('is-widget');
-        if (view === 'spx') {
-          cardQqq.style.display = 'none';
-          cardFgi.style.display = 'none';
-        } else if (view === 'qqq') {
-          cardSpx.style.display = 'none';
-          cardFgi.style.display = 'none';
-        } else if (view === 'fgi') {
-          cardSpx.style.display = 'none';
-          cardQqq.style.display = 'none';
-        }
-        if (btnWrap) btnWrap.style.display = 'none';
-      }
-    }
-
     async function loadDashboard() {
       const loader = document.getElementById("loader");
       const mainView = document.getElementById("main-view");
@@ -809,10 +811,8 @@
           <span style="color: ${fgiColor(data.fgi.avg30)}">30일 평균 ${data.fgi.avg30.toFixed(0)}</span>
         `;
 
-        applyViewFilter();
-
         loader.style.display = "none";
-        mainView.style.display = ""; // CSS 클래스 규칙에 의해 위젯은 flex, 웹은 grid로 완벽 분리
+        mainView.style.display = "";
       } catch (err) {
         loader.innerText = "오류: " + err.message;
       }
