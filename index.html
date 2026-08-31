@@ -220,92 +220,131 @@
     .refresh-btn:active { background: #222; }
 
     /* =========================================
-       위젯 전용 대형 꽉 찬(Full-Fit) 뷰포트 스타일
+       위젯 전용 규격화 스타일 (960 x 460 기준 무절단 렌더링)
        ========================================= */
     body.is-widget {
-      width: 1080px;
-      height: 500px;
-      padding: 24px 28px;
+      width: 960px;
+      height: 460px;
+      padding: 18px 24px;
+      margin: 0;
       overflow: hidden;
       display: flex;
       flex-direction: column;
       justify-content: center;
+      box-sizing: border-box;
     }
 
     body.is-widget .widget-container {
+      width: 100%;
       height: 100%;
       gap: 0;
     }
 
     body.is-widget .card {
+      width: 100%;
       height: 100%;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 24px 30px;
-      border-radius: 32px;
+      padding: 18px 24px;
+      border-radius: 28px;
       border: 2px solid #222224;
       background: #000000;
+      box-sizing: border-box;
     }
 
     body.is-widget .title,
     body.is-widget .fgi-header {
-      font-size: 34px !important;
-      letter-spacing: -0.5px;
+      font-size: 26px !important;
+      font-weight: 700;
+      letter-spacing: -0.3px;
     }
 
     body.is-widget .version {
-      font-size: 22px !important;
+      font-size: 17px !important;
+      color: #888888;
     }
 
     body.is-widget .updated-time {
-      font-size: 24px !important;
-      margin-bottom: 12px;
+      font-size: 18px !important;
+      margin-bottom: 6px;
+      color: #AAAAAA;
     }
 
     body.is-widget .content-row {
       flex: 1;
-      gap: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      min-height: 0;
     }
 
     body.is-widget .chart-box {
-      flex: 1.1;
+      flex: 1;
       height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    body.is-widget .chart-box canvas {
+      max-height: 100%;
+      max-width: 100%;
+      width: auto;
+      height: auto;
     }
 
     body.is-widget .info-box {
-      flex: 1.15;
-      gap: 8px;
+      flex: 1.1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 6px;
+      min-width: 0;
     }
 
     body.is-widget .sig-row {
-      font-size: 38px !important;
+      font-size: 26px !important;
+      font-weight: 700;
       line-height: 1.25;
+      white-space: nowrap;
     }
 
     body.is-widget .status-text {
-      font-size: 26px !important;
-      margin-top: 4px;
+      font-size: 19px !important;
+      margin-top: 2px;
+      white-space: nowrap;
     }
 
     body.is-widget .dd-text {
-      font-size: 28px !important;
-      margin-top: 6px;
+      font-size: 20px !important;
+      margin-top: 4px;
+      white-space: nowrap;
     }
 
     body.is-widget .fgi-info-box {
-      flex: 1.1;
-      gap: 6px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      min-width: 0;
     }
 
     body.is-widget .fgi-rating {
-      font-size: 36px !important;
+      font-size: 24px !important;
+      font-weight: 700;
       margin-top: 4px;
+      white-space: nowrap;
     }
 
     body.is-widget .fgi-stats {
-      font-size: 28px !important;
-      gap: 8px;
+      font-size: 20px !important;
+      gap: 6px;
+      white-space: nowrap;
     }
   </style>
 </head>
@@ -428,7 +467,7 @@
     }
 
     function drawBandChart(canvasId, closes, sma, upB, dnB) {
-      const cv = getHDContext(canvasId, 520, 310);
+      const cv = getHDContext(canvasId, 440, 250);
       if (!cv) return;
       const { ctx } = cv;
 
@@ -444,8 +483,8 @@
       const range = (max - min) === 0 ? 1 : (max - min);
 
       const trans = (v, i) => ({
-        x: 15 + (i / (SIZE - 1)) * 490,
-        y: 295 - ((v - min) / range) * 280,
+        x: 12 + (i / (SIZE - 1)) * 416,
+        y: 238 - ((v - min) / range) * 226,
       });
 
       const plot = (dat, col, wid) => {
@@ -462,17 +501,17 @@
         ctx.stroke();
       };
 
-      plot(uSet.map(trans), C.upperBand, 4);
-      plot(lSet.map(trans), C.lowerBand, 4);
-      plot(pSet.map(trans), C.cp, 6);
+      plot(uSet.map(trans), C.upperBand, 3);
+      plot(lSet.map(trans), C.lowerBand, 3);
+      plot(pSet.map(trans), C.cp, 5);
     }
 
     function drawFGIChart(canvasId, data) {
-      const cv = getHDContext(canvasId, 500, 310);
+      const cv = getHDContext(canvasId, 440, 250);
       if (!cv) return;
       const { ctx, W, H } = cv;
 
-      const PAD_L = 10, PAD_R = 10, PAD_T = 16, PAD_B = 16;
+      const PAD_L = 8, PAD_R = 8, PAD_T = 12, PAD_B = 12;
       const usableW = W - PAD_L - PAD_R;
       const usableH = H - PAD_T - PAD_B;
       const toY = (val) => PAD_T + (1 - val / 100) * usableH;
@@ -483,7 +522,7 @@
         ctx.moveTo(PAD_L, toY(level));
         ctx.lineTo(W - PAD_R, toY(level));
         ctx.strokeStyle = "rgba(170, 170, 170, 0.25)";
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 1.5;
         ctx.stroke();
       });
 
@@ -493,25 +532,25 @@
         if (i === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
       });
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.5)";
-      ctx.lineWidth = 3;
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.45)";
+      ctx.lineWidth = 2.5;
       ctx.stroke();
 
       data.forEach((d, i) => {
         const x = toX(i), y = toY(parseFloat(d.y));
         ctx.fillStyle = fgiColor(parseFloat(d.y));
         ctx.beginPath();
-        ctx.arc(x, y, 6, 0, Math.PI * 2);
+        ctx.arc(x, y, 4.5, 0, Math.PI * 2);
         ctx.fill();
       });
     }
 
     function drawGauge(canvasId, val) {
-      const cv = getHDContext(canvasId, 360, 200);
+      const cv = getHDContext(canvasId, 280, 150);
       if (!cv) return;
       const { ctx, W, H } = cv;
 
-      const cx = W / 2, cy = H - 20, radius = 135, arcThick = 14;
+      const cx = W / 2, cy = H - 15, radius = 105, arcThick = 11;
 
       for (let i = 0; i < 120; i++) {
         const t = i / 119;
@@ -525,12 +564,12 @@
       }
 
       const needleAngle = Math.PI + (val / 100) * Math.PI;
-      const needleLen = radius - 10;
+      const needleLen = radius - 8;
       for (let i = 0; i < 35; i++) {
         const t = i / 34;
         const nx = cx + Math.cos(needleAngle) * needleLen * t;
         const ny = cy + Math.sin(needleAngle) * needleLen * t;
-        const thick = 14 * (1 - t);
+        const thick = 11 * (1 - t);
         ctx.fillStyle = C.p1;
         ctx.beginPath();
         ctx.arc(nx, ny, thick / 2, 0, Math.PI * 2);
@@ -539,14 +578,14 @@
 
       ctx.fillStyle = C.p1;
       ctx.beginPath();
-      ctx.arc(cx, cy, 10, 0, Math.PI * 2);
+      ctx.arc(cx, cy, 7, 0, Math.PI * 2);
       ctx.fill();
 
-      const labelDist = radius + 26;
+      const labelDist = radius + 22;
       const lx = cx + Math.cos(needleAngle) * labelDist;
       const ly = cy + Math.sin(needleAngle) * labelDist;
       ctx.fillStyle = C.p1;
-      ctx.font = "bold 26px -apple-system, sans-serif";
+      ctx.font = "bold 20px -apple-system, sans-serif";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText(val.toFixed(0), lx, ly);
