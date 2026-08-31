@@ -57,7 +57,6 @@ jobs:
             echo "Installing ImageMagick..."
             sudo apt-get update && sudo apt-get install -y imagemagick
 
-            echo "Applying custom app icon from icon.png..."
             for size in 48:mdpi 72:hdpi 96:xhdpi 144:xxhdpi 192:xxxhdpi; do
               dim="${size%%:*}"
               res="${size##*:}"
@@ -75,7 +74,7 @@ jobs:
             done
           fi
 
-      - name: Inject Ultra-Fast Instant Android Widgets
+      - name: Inject Ultra-Fast Responsive Android Widgets
         run: |
           mkdir -p android/app/src/main/res/drawable
           cat << 'EOF' > android/app/src/main/res/drawable/ic_refresh.xml
@@ -355,5 +354,5 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: 200SPX-Fast-APK
+          name: 200SPX-Optimized-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
