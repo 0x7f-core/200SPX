@@ -57,6 +57,7 @@
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
       user-select: none;
     }
 
@@ -107,13 +108,12 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
+      gap: 12px;
       width: 100%;
     }
 
     .chart-box {
-      flex: 1.25;
-      height: 100%;
+      flex: 1.35;
       min-width: 0;
       display: flex;
       align-items: center;
@@ -131,8 +131,10 @@
 
     canvas {
       width: 100%;
-      height: 100%;
+      height: auto;
       display: block;
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
     }
 
     .sig-row {
@@ -148,12 +150,12 @@
     .token-spym { color: var(--spym); }
     .token-sgov { color: var(--sgov); }
     .token-dot  { color: var(--dot); margin: 0 1px; }
-    .token-action { color: var(--p1); margin-left: 4px; }
+    .token-action { color: var(--p1); margin-left: 6px; font-weight: 700; }
     .token-alert  { color: var(--alert); }
 
     .status-text {
       font-size: 11px;
-      margin-top: 2px;
+      margin-top: 3px;
       font-weight: 400;
     }
 
@@ -230,7 +232,7 @@
     .refresh-btn:active { background: #222; }
 
     /* =============================================================================
-       위젯 전용 풀-와이드(Full-Wide) 뷰포트 스타일 (좌우 여백 제거)
+       위젯 전용 4x2 풀-와이드 반응형 스타일 (좌우 여백 제거)
        ============================================================================= */
     body.is-widget {
       width: 100vw;
@@ -272,24 +274,24 @@
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      margin-bottom: 1px;
+      margin-bottom: 2px;
     }
 
     body.is-widget .title,
     body.is-widget .fgi-header {
-      font-size: clamp(14px, 3.8vw, 17px) !important;
+      font-size: clamp(14px, 3.8vw, 17.5px) !important;
       font-weight: 700;
       letter-spacing: -0.3px;
     }
 
     body.is-widget .version {
-      font-size: clamp(8px, 2vw, 10px) !important;
+      font-size: clamp(8.5px, 2vw, 10.5px) !important;
       color: #888888;
     }
 
     body.is-widget .updated-time {
-      font-size: clamp(9px, 2.3vw, 11px) !important;
-      margin-bottom: 2px;
+      font-size: clamp(9.5px, 2.3vw, 11.5px) !important;
+      margin-bottom: 4px;
       color: #FFFFFF;
     }
 
@@ -299,14 +301,13 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      width: 100%;
       min-height: 0;
+      width: 100%;
     }
 
     body.is-widget .chart-box {
-      flex: 1.35;
+      flex: 1.45;
       height: 100%;
-      width: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -314,9 +315,10 @@
     }
 
     body.is-widget .chart-box canvas {
-      width: 100% !important;
-      height: 100% !important;
-      display: block;
+      max-height: 100%;
+      width: 100%;
+      height: auto;
+      object-fit: contain;
     }
 
     body.is-widget .info-box {
@@ -324,29 +326,32 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      align-items: flex-start;
       gap: 2px;
       min-width: 0;
       padding-left: 2px;
     }
 
     body.is-widget .sig-row {
-      font-size: clamp(13px, 3.6vw, 16px) !important;
+      font-size: clamp(13.5px, 3.6vw, 16.5px) !important;
       font-weight: 700;
       line-height: 1.25;
       white-space: nowrap;
     }
 
+    body.is-widget .token-action {
+      margin-left: 5px;
+    }
+
     body.is-widget .status-text {
-      font-size: clamp(10px, 2.5vw, 12px) !important;
-      margin-top: 1px;
+      font-size: clamp(10.5px, 2.6vw, 12.5px) !important;
+      margin-top: 2px;
       white-space: nowrap;
     }
 
     body.is-widget .dd-text {
-      font-size: clamp(10.5px, 2.6vw, 12.5px) !important;
+      font-size: clamp(11px, 2.7vw, 13px) !important;
       font-weight: 600;
-      margin-top: 2px;
+      margin-top: 3px;
       white-space: nowrap;
     }
 
@@ -361,14 +366,14 @@
     }
 
     body.is-widget .fgi-rating {
-      font-size: clamp(13px, 3.4vw, 16px) !important;
+      font-size: clamp(13.5px, 3.5vw, 16.5px) !important;
       font-weight: 700;
       margin-top: 2px;
       white-space: nowrap;
     }
 
     body.is-widget .fgi-stats {
-      font-size: clamp(11px, 2.7vw, 13.5px) !important;
+      font-size: clamp(11.5px, 2.8vw, 14px) !important;
       gap: 4px;
       white-space: nowrap;
     }
@@ -456,22 +461,20 @@
       extremeGreed: "#b07cc0"
     };
 
-    // 컨테이너 너비에 맞춘 동적 초고화질 캔버스 컨텍스트
-    function getResponsiveContext(canvasId) {
+    // 3배 슈퍼샘플링 초고화질 캔버스 컨텍스트 (와이드 비율)
+    function getHDContext(canvasId, logicalW, logicalH) {
       const cvs = document.getElementById(canvasId);
       if (!cvs) return null;
-      const rect = cvs.getBoundingClientRect();
-      const w = Math.max(rect.width || 320, 200);
-      const h = Math.max(rect.height || 160, 100);
       const dpr = 3;
-      cvs.width = w * dpr;
-      cvs.height = h * dpr;
+      cvs.width = logicalW * dpr;
+      cvs.height = logicalH * dpr;
+      cvs.style.aspectRatio = `${logicalW} / ${logicalH}`;
       const ctx = cvs.getContext("2d");
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = "high";
       ctx.resetTransform?.();
       ctx.scale(dpr, dpr);
-      return { ctx, W: w, H: h };
+      return { ctx, W: logicalW, H: logicalH };
     }
 
     function etfColorClass(token) {
@@ -500,11 +503,12 @@
       }
     }
 
-    // 좌측 끝부터 차트 영역 가득 채워 그리기
+    // 4x2 위젯에 맞춘 풀-와이드 밴드 차트 (620 x 280)
     function drawBandChart(canvasId, closes, sma, upB, dnB) {
-      const cv = getResponsiveContext(canvasId);
+      const W = 620, H = 280;
+      const cv = getHDContext(canvasId, W, H);
       if (!cv) return;
-      const { ctx, W, H } = cv;
+      const { ctx } = cv;
 
       const SIZE = 90;
       const pSet = closes.slice(-SIZE);
@@ -517,10 +521,9 @@
       const max = Math.max(...all);
       const range = (max - min) === 0 ? 1 : (max - min);
 
-      const PAD_L = 4, PAD_R = 4, PAD_T = 8, PAD_B = 8;
       const trans = (v, i) => ({
-        x: PAD_L + (i / (SIZE - 1)) * (W - PAD_L - PAD_R),
-        y: (H - PAD_B) - ((v - min) / range) * (H - PAD_T - PAD_B),
+        x: 10 + (i / (SIZE - 1)) * (W - 20),
+        y: (H - 15) - ((v - min) / range) * (H - 30),
       });
 
       const plot = (dat, col, wid) => {
@@ -544,12 +547,14 @@
       plot(pSet.map(trans), C.cp, 5.5);
     }
 
+    // 4x2 위젯 풀-와이드 FGI 히스토리 차트 (580 x 280)
     function drawFGIChart(canvasId, data) {
-      const cv = getResponsiveContext(canvasId);
+      const W = 580, H = 280;
+      const cv = getHDContext(canvasId, W, H);
       if (!cv) return;
-      const { ctx, W, H } = cv;
+      const { ctx } = cv;
 
-      const PAD_L = 4, PAD_R = 4, PAD_T = 8, PAD_B = 8;
+      const PAD_L = 8, PAD_R = 8, PAD_T = 12, PAD_B = 12;
       const usableW = W - PAD_L - PAD_R;
       const usableH = H - PAD_T - PAD_B;
       const toY = (val) => PAD_T + (1 - val / 100) * usableH;
@@ -578,20 +583,18 @@
         const x = toX(i), y = toY(parseFloat(d.y));
         ctx.fillStyle = fgiColor(parseFloat(d.y));
         ctx.beginPath();
-        ctx.arc(x, y, 4, 0, Math.PI * 2);
+        ctx.arc(x, y, 4.5, 0, Math.PI * 2);
         ctx.fill();
       });
     }
 
     function drawGauge(canvasId, val) {
-      const cv = getResponsiveContext(canvasId);
+      const W = 320, H = 180;
+      const cv = getHDContext(canvasId, W, H);
       if (!cv) return;
-      const { ctx, W, H } = cv;
+      const { ctx } = cv;
 
-      const cx = W / 2;
-      const cy = H - 8;
-      const radius = Math.min(W / 2 - 16, H - 14);
-      const arcThick = Math.max(7, radius * 0.09);
+      const cx = W / 2, cy = H - 20, radius = 120, arcThick = 10;
 
       for (let i = 0; i < 120; i++) {
         const t = i / 119;
@@ -605,12 +608,12 @@
       }
 
       const needleAngle = Math.PI + (val / 100) * Math.PI;
-      const needleLen = radius - 6;
+      const needleLen = radius - 8;
       for (let i = 0; i < 35; i++) {
         const t = i / 34;
         const nx = cx + Math.cos(needleAngle) * needleLen * t;
         const ny = cy + Math.sin(needleAngle) * needleLen * t;
-        const thick = Math.max(7, radius * 0.09) * (1 - t);
+        const thick = 12 * (1 - t);
         ctx.fillStyle = C.p1;
         ctx.beginPath();
         ctx.arc(nx, ny, thick / 2, 0, Math.PI * 2);
@@ -619,14 +622,14 @@
 
       ctx.fillStyle = C.p1;
       ctx.beginPath();
-      ctx.arc(cx, cy, 6, 0, Math.PI * 2);
+      ctx.arc(cx, cy, 8, 0, Math.PI * 2);
       ctx.fill();
 
-      const labelDist = radius + 16;
+      const labelDist = radius + 22;
       const lx = cx + Math.cos(needleAngle) * labelDist;
       const ly = cy + Math.sin(needleAngle) * labelDist;
       ctx.fillStyle = C.p1;
-      ctx.font = "bold 16px -apple-system, sans-serif";
+      ctx.font = "bold 22px -apple-system, sans-serif";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText(val.toFixed(0), lx, ly);
@@ -639,18 +642,19 @@
       let html = "";
       sig.lines.forEach(lineWords => {
         let tokensHtml = "";
-        lineWords.forEach(token => {
-          if (sig.isAlert) {
-            tokensHtml += `<span class="token-alert">${token}</span> `;
+        lineWords.forEach((token, idx) => {
+          if (idx === 1) {
+            tokensHtml += `<span class="token-action">${token}</span>`;
+          } else if (sig.isAlert) {
+            tokensHtml += `<span class="token-alert">${token}</span>`;
           } else if (token.includes("·")) {
             const parts = token.split("·");
             parts.forEach((part, i) => {
               tokensHtml += `<span class="${etfColorClass(part)}">${part}</span>`;
               if (i < parts.length - 1) tokensHtml += `<span class="token-dot">·</span>`;
             });
-            tokensHtml += ` `;
           } else {
-            tokensHtml += `<span class="${etfColorClass(token)}">${token}</span> `;
+            tokensHtml += `<span class="${etfColorClass(token)}">${token}</span>`;
           }
         });
 
@@ -722,18 +726,15 @@
         document.getElementById("spx-updated").innerText = formatKSTTime(data.spxTime);
         document.getElementById("qqq-updated").innerText = formatKSTTime(data.qqqTime);
 
-        // 먼저 뷰를 화면에 표시하여 정확한 컨테이너 크기(Width)를 확보
-        applyViewFilter();
-        loader.style.display = "none";
-        mainView.style.display = "flex";
-
-        // 컨테이너 너비에 맞게 풀-와이드로 렌더링
+        // SPX ±2.5% 밴드
         drawBandChart("spxChart", data.spx.closes, data.spx.sma, 0.025, 0.025);
         renderTokens("spx-info", data.spx.sig);
 
+        // QQQ ±2.0% 밴드
         drawBandChart("qqqChart", data.qqq.closes, data.qqq.sma, 0.02, 0.02);
         renderTokens("qqq-info", data.qqq.sig);
 
+        // FGI 차트 및 게이지
         drawFGIChart("fgiHistoryChart", data.fgi.data);
         drawGauge("fgiGauge", data.fgi.latestVal);
 
@@ -747,6 +748,11 @@
           <span class="fgi-slash"> / </span>
           <span style="color: ${fgiColor(data.fgi.avg30)}">30일 평균 ${data.fgi.avg30.toFixed(0)}</span>
         `;
+
+        applyViewFilter();
+
+        loader.style.display = "none";
+        mainView.style.display = "flex";
       } catch (err) {
         loader.innerText = "오류: " + err.message;
       }
