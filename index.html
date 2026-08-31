@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" style="background-color: #000000;">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -45,7 +45,6 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* 모든 링크 밑줄 원천 제거 */
     a, a:link, a:visited, a:hover, a:active {
       text-decoration: none !important;
       color: inherit;
@@ -55,7 +54,7 @@
     html, body {
       width: 100%;
       height: 100%;
-      background-color: var(--bg);
+      background-color: #000000 !important;
     }
 
     body {
@@ -279,6 +278,7 @@
       color: var(--p2);
       font-size: 13px;
       font-weight: 500;
+      background-color: #000000;
     }
 
     /* =============================================================================
@@ -296,7 +296,7 @@
       flex-direction: column !important;
       justify-content: center !important;
       box-sizing: border-box !important;
-      background: #000000 !important;
+      background-color: #000000 !important;
     }
 
     body.is-widget .widget-container {
@@ -307,13 +307,13 @@
       flex-direction: column !important;
       gap: 0 !important;
       padding: 0 !important;
+      background-color: #000000 !important;
     }
 
     body.is-widget .btn-wrap {
       display: none !important;
     }
 
-    /* 위젯별 격리 */
     body.view-spx #card-qqq,
     body.view-spx #card-fgi {
       display: none !important;
@@ -338,7 +338,7 @@
       padding: 2.6vh 3.0vw 2.2vh 3.0vw !important;
       border-radius: 20px !important;
       border: 1px solid #1c1c1e !important;
-      background: #000000 !important;
+      background-color: #000000 !important;
       box-sizing: border-box !important;
     }
 
@@ -412,7 +412,6 @@
       padding-left: 0.5vw !important;
     }
 
-    /* FGI 전용 우측 완전 중앙 정렬 */
     body.is-widget .fgi-info-box {
       flex: 1.25 !important;
       display: flex !important;
@@ -485,7 +484,7 @@
     }
   </style>
 </head>
-<body>
+<body style="background-color: #000000;">
 
   <div id="loader" class="loading-wrap">동기화된 지표를 불러오는 중...</div>
 
@@ -545,7 +544,6 @@
   <script>
     const WORKER_URL = "https://spx-indicator-api.jinwook0904.workers.dev";
 
-    // iOS Scriptable C 팔레트 1:1 완벽 일치
     const C = {
       bg: "#000000",
       p1: "#FFFFFF",
@@ -571,14 +569,12 @@
       extremeGreed: "#b07cc0"
     };
 
-    // 진입 즉시 URL 파라미터 감지하여 클래스 주입
     const urlParams = new URLSearchParams(window.location.search);
     const viewParam = urlParams.get('v');
     if (viewParam) {
       document.body.classList.add('is-widget', `view-${viewParam}`);
     }
 
-    // 3배 슈퍼샘플링 캔버스 컨텍스트
     function getHDContext(canvasId, logicalW, logicalH) {
       const cvs = document.getElementById(canvasId);
       if (!cvs) return null;
@@ -620,7 +616,6 @@
       }
     }
 
-    // Scriptable drawBandChart 1:1 완벽 구현
     function drawBandChart(canvasId, closes, sma, upB, dnB) {
       const W = 520, H = 260;
       const cv = getHDContext(canvasId, W, H);
@@ -664,7 +659,6 @@
       plot(pSet.map(trans), C.cp, 6.0);
     }
 
-    // Scriptable drawFGIChart 1:1 완벽 구현
     function drawFGIChart(canvasId, data) {
       const W = 520, H = 260;
       const cv = getHDContext(canvasId, W, H);
@@ -705,7 +699,6 @@
       });
     }
 
-    // Scriptable drawGauge 1:1 완벽 구현 (600 SemiBold 라벨)
     function drawGauge(canvasId, val) {
       const W = 320, H = 180;
       const cv = getHDContext(canvasId, W, H);
@@ -753,7 +746,6 @@
       ctx.fillText(val.toFixed(0), lx, ly);
     }
 
-    // Scriptable addToken 방식 토큰 렌더링
     function renderTokens(containerId, sig) {
       const el = document.getElementById(containerId);
       if (!el || !sig) return;
@@ -817,15 +809,12 @@
         document.getElementById("spx-updated").innerText = formatKSTTime(data.spxTime);
         document.getElementById("qqq-updated").innerText = formatKSTTime(data.qqqTime);
 
-        // 200슨피단 (SPX ±2.5% 밴드)
         drawBandChart("spxChart", data.spx.closes, data.spx.sma, 0.025, 0.025);
         renderTokens("spx-info", data.spx.sig);
 
-        // 200큐큐단 (QQQ ±2.0% 밴드)
         drawBandChart("qqqChart", data.qqq.closes, data.qqq.sma, 0.02, 0.02);
         renderTokens("qqq-info", data.qqq.sig);
 
-        // 공포와 탐욕 지수 (CNN FGI)
         drawFGIChart("fgiHistoryChart", data.fgi.data);
         drawGauge("fgiGauge", data.fgi.latestVal);
 
