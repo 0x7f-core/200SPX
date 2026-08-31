@@ -57,7 +57,6 @@
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
-      text-rendering: optimizeLegibility;
       user-select: none;
     }
 
@@ -113,7 +112,8 @@
     }
 
     .chart-box {
-      flex: 1;
+      flex: 1.25;
+      height: 100%;
       min-width: 0;
       display: flex;
       align-items: center;
@@ -121,7 +121,7 @@
     }
 
     .info-box {
-      flex: 1.15;
+      flex: 1;
       min-width: 0;
       display: flex;
       flex-direction: column;
@@ -131,10 +131,8 @@
 
     canvas {
       width: 100%;
-      height: auto;
+      height: 100%;
       display: block;
-      image-rendering: -webkit-optimize-contrast;
-      image-rendering: crisp-edges;
     }
 
     .sig-row {
@@ -177,7 +175,7 @@
     }
 
     .fgi-info-box {
-      flex: 1.15;
+      flex: 1;
       min-width: 0;
       display: flex;
       flex-direction: column;
@@ -232,7 +230,7 @@
     .refresh-btn:active { background: #222; }
 
     /* =============================================================================
-       위젯 전용 무절단 고화질 반응형 스타일
+       위젯 전용 풀-와이드(Full-Wide) 뷰포트 스타일 (좌우 여백 제거)
        ============================================================================= */
     body.is-widget {
       width: 100vw;
@@ -240,7 +238,7 @@
       max-width: 100vw;
       max-height: 100vh;
       margin: 0;
-      padding: 6px 10px;
+      padding: 4px 6px;
       overflow: hidden;
       display: flex;
       flex-direction: column;
@@ -263,8 +261,8 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 10px 14px;
-      border-radius: 20px;
+      padding: 8px 12px;
+      border-radius: 18px;
       border: 1px solid #1c1c1e;
       background: #000000;
       box-sizing: border-box;
@@ -274,7 +272,7 @@
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      margin-bottom: 2px;
+      margin-bottom: 1px;
     }
 
     body.is-widget .title,
@@ -291,7 +289,7 @@
 
     body.is-widget .updated-time {
       font-size: clamp(9px, 2.3vw, 11px) !important;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
       color: #FFFFFF;
     }
 
@@ -300,13 +298,15 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
+      gap: 12px;
+      width: 100%;
       min-height: 0;
     }
 
     body.is-widget .chart-box {
-      flex: 1;
+      flex: 1.35;
       height: 100%;
+      width: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -314,24 +314,24 @@
     }
 
     body.is-widget .chart-box canvas {
-      max-height: 100%;
-      max-width: 100%;
-      width: auto;
-      height: auto;
-      object-fit: contain;
+      width: 100% !important;
+      height: 100% !important;
+      display: block;
     }
 
     body.is-widget .info-box {
-      flex: 1.15;
+      flex: 1;
       display: flex;
       flex-direction: column;
       justify-content: center;
+      align-items: flex-start;
       gap: 2px;
       min-width: 0;
+      padding-left: 2px;
     }
 
     body.is-widget .sig-row {
-      font-size: clamp(13px, 3.5vw, 16px) !important;
+      font-size: clamp(13px, 3.6vw, 16px) !important;
       font-weight: 700;
       line-height: 1.25;
       white-space: nowrap;
@@ -339,19 +339,19 @@
 
     body.is-widget .status-text {
       font-size: clamp(10px, 2.5vw, 12px) !important;
-      margin-top: 2px;
+      margin-top: 1px;
       white-space: nowrap;
     }
 
     body.is-widget .dd-text {
       font-size: clamp(10.5px, 2.6vw, 12.5px) !important;
       font-weight: 600;
-      margin-top: 3px;
+      margin-top: 2px;
       white-space: nowrap;
     }
 
     body.is-widget .fgi-info-box {
-      flex: 1.1;
+      flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -456,20 +456,22 @@
       extremeGreed: "#b07cc0"
     };
 
-    // 3배 슈퍼샘플링 초고화질 캔버스 컨텍스트
-    function getHDContext(canvasId, logicalW, logicalH) {
+    // 컨테이너 너비에 맞춘 동적 초고화질 캔버스 컨텍스트
+    function getResponsiveContext(canvasId) {
       const cvs = document.getElementById(canvasId);
       if (!cvs) return null;
+      const rect = cvs.getBoundingClientRect();
+      const w = Math.max(rect.width || 320, 200);
+      const h = Math.max(rect.height || 160, 100);
       const dpr = 3;
-      cvs.width = logicalW * dpr;
-      cvs.height = logicalH * dpr;
-      cvs.style.aspectRatio = `${logicalW} / ${logicalH}`;
+      cvs.width = w * dpr;
+      cvs.height = h * dpr;
       const ctx = cvs.getContext("2d");
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = "high";
       ctx.resetTransform?.();
       ctx.scale(dpr, dpr);
-      return { ctx, W: logicalW, H: logicalH };
+      return { ctx, W: w, H: h };
     }
 
     function etfColorClass(token) {
@@ -498,10 +500,11 @@
       }
     }
 
+    // 좌측 끝부터 차트 영역 가득 채워 그리기
     function drawBandChart(canvasId, closes, sma, upB, dnB) {
-      const cv = getHDContext(canvasId, 500, 300);
+      const cv = getResponsiveContext(canvasId);
       if (!cv) return;
-      const { ctx } = cv;
+      const { ctx, W, H } = cv;
 
       const SIZE = 90;
       const pSet = closes.slice(-SIZE);
@@ -514,9 +517,10 @@
       const max = Math.max(...all);
       const range = (max - min) === 0 ? 1 : (max - min);
 
+      const PAD_L = 4, PAD_R = 4, PAD_T = 8, PAD_B = 8;
       const trans = (v, i) => ({
-        x: 15 + (i / (SIZE - 1)) * 470,
-        y: 285 - ((v - min) / range) * 270,
+        x: PAD_L + (i / (SIZE - 1)) * (W - PAD_L - PAD_R),
+        y: (H - PAD_B) - ((v - min) / range) * (H - PAD_T - PAD_B),
       });
 
       const plot = (dat, col, wid) => {
@@ -541,11 +545,11 @@
     }
 
     function drawFGIChart(canvasId, data) {
-      const cv = getHDContext(canvasId, 480, 300);
+      const cv = getResponsiveContext(canvasId);
       if (!cv) return;
       const { ctx, W, H } = cv;
 
-      const PAD_L = 8, PAD_R = 8, PAD_T = 12, PAD_B = 12;
+      const PAD_L = 4, PAD_R = 4, PAD_T = 8, PAD_B = 8;
       const usableW = W - PAD_L - PAD_R;
       const usableH = H - PAD_T - PAD_B;
       const toY = (val) => PAD_T + (1 - val / 100) * usableH;
@@ -574,17 +578,20 @@
         const x = toX(i), y = toY(parseFloat(d.y));
         ctx.fillStyle = fgiColor(parseFloat(d.y));
         ctx.beginPath();
-        ctx.arc(x, y, 4.5, 0, Math.PI * 2);
+        ctx.arc(x, y, 4, 0, Math.PI * 2);
         ctx.fill();
       });
     }
 
     function drawGauge(canvasId, val) {
-      const cv = getHDContext(canvasId, 320, 180);
+      const cv = getResponsiveContext(canvasId);
       if (!cv) return;
       const { ctx, W, H } = cv;
 
-      const cx = W / 2, cy = H - 20, radius = 120, arcThick = 10;
+      const cx = W / 2;
+      const cy = H - 8;
+      const radius = Math.min(W / 2 - 16, H - 14);
+      const arcThick = Math.max(7, radius * 0.09);
 
       for (let i = 0; i < 120; i++) {
         const t = i / 119;
@@ -598,12 +605,12 @@
       }
 
       const needleAngle = Math.PI + (val / 100) * Math.PI;
-      const needleLen = radius - 8;
+      const needleLen = radius - 6;
       for (let i = 0; i < 35; i++) {
         const t = i / 34;
         const nx = cx + Math.cos(needleAngle) * needleLen * t;
         const ny = cy + Math.sin(needleAngle) * needleLen * t;
-        const thick = 12 * (1 - t);
+        const thick = Math.max(7, radius * 0.09) * (1 - t);
         ctx.fillStyle = C.p1;
         ctx.beginPath();
         ctx.arc(nx, ny, thick / 2, 0, Math.PI * 2);
@@ -612,14 +619,14 @@
 
       ctx.fillStyle = C.p1;
       ctx.beginPath();
-      ctx.arc(cx, cy, 8, 0, Math.PI * 2);
+      ctx.arc(cx, cy, 6, 0, Math.PI * 2);
       ctx.fill();
 
-      const labelDist = radius + 22;
+      const labelDist = radius + 16;
       const lx = cx + Math.cos(needleAngle) * labelDist;
       const ly = cy + Math.sin(needleAngle) * labelDist;
       ctx.fillStyle = C.p1;
-      ctx.font = "bold 22px -apple-system, sans-serif";
+      ctx.font = "bold 16px -apple-system, sans-serif";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText(val.toFixed(0), lx, ly);
@@ -715,15 +722,18 @@
         document.getElementById("spx-updated").innerText = formatKSTTime(data.spxTime);
         document.getElementById("qqq-updated").innerText = formatKSTTime(data.qqqTime);
 
-        // SPX ±2.5% 밴드
+        // 먼저 뷰를 화면에 표시하여 정확한 컨테이너 크기(Width)를 확보
+        applyViewFilter();
+        loader.style.display = "none";
+        mainView.style.display = "flex";
+
+        // 컨테이너 너비에 맞게 풀-와이드로 렌더링
         drawBandChart("spxChart", data.spx.closes, data.spx.sma, 0.025, 0.025);
         renderTokens("spx-info", data.spx.sig);
 
-        // QQQ ±2.0% 밴드
         drawBandChart("qqqChart", data.qqq.closes, data.qqq.sma, 0.02, 0.02);
         renderTokens("qqq-info", data.qqq.sig);
 
-        // FGI 차트 및 게이지
         drawFGIChart("fgiHistoryChart", data.fgi.data);
         drawGauge("fgiGauge", data.fgi.latestVal);
 
@@ -737,11 +747,6 @@
           <span class="fgi-slash"> / </span>
           <span style="color: ${fgiColor(data.fgi.avg30)}">30일 평균 ${data.fgi.avg30.toFixed(0)}</span>
         `;
-
-        applyViewFilter();
-
-        loader.style.display = "none";
-        mainView.style.display = "flex";
       } catch (err) {
         loader.innerText = "오류: " + err.message;
       }
