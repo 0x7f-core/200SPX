@@ -16,7 +16,8 @@
       --card-bg: #000000;
       --card-border: #1c1c1e;
       --p1: #FFFFFF;
-      --p2: #AAAAAA;
+      --p2: #888888;
+      --status-p: #9a9aa0;
       --dot: #666666;
       --slash: #FFFFFF;
       --divider: #333333;
@@ -52,7 +53,7 @@
 
     body {
       color: var(--p1);
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Roboto", "Helvetica Neue", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "SF Pro Display", "SF Pro Text", "Pretendard", "Roboto", sans-serif;
       padding: calc(10px + env(safe-area-inset-top)) 12px calc(10px + env(safe-area-inset-bottom)) 12px;
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
@@ -80,7 +81,7 @@
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      margin-bottom: 3px;
+      margin-bottom: 2px;
     }
 
     .title {
@@ -88,20 +89,21 @@
       font-weight: 700;
       text-decoration: none;
       color: var(--p1);
-      letter-spacing: -0.3px;
+      letter-spacing: -0.4px;
     }
 
     .version {
-      font-size: 9px;
+      font-size: 9.5px;
       color: var(--p2);
       font-weight: 400;
     }
 
     .updated-time {
-      font-size: 10px;
+      font-size: 10.5px;
       color: var(--p1);
       margin-bottom: 6px;
       font-weight: 400;
+      letter-spacing: -0.2px;
     }
 
     .content-row {
@@ -113,7 +115,7 @@
     }
 
     .chart-box {
-      flex: 1.35;
+      flex: 1.05;
       min-width: 0;
       display: flex;
       align-items: center;
@@ -121,12 +123,12 @@
     }
 
     .info-box {
-      flex: 1;
+      flex: 1.15;
       min-width: 0;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      gap: 3px;
+      gap: 2px;
     }
 
     canvas {
@@ -144,6 +146,7 @@
       display: flex;
       align-items: center;
       flex-wrap: wrap;
+      letter-spacing: -0.2px;
     }
 
     .token-tqqq { color: var(--tqqq); }
@@ -154,16 +157,19 @@
     .token-alert  { color: var(--alert); }
 
     .status-text {
-      font-size: 11px;
+      font-size: 10.5px;
+      color: var(--status-p);
       margin-top: 3px;
       font-weight: 400;
+      letter-spacing: -0.2px;
     }
 
     .dd-text {
-      font-size: 11px;
-      font-weight: 600;
+      font-size: 11.5px;
+      font-weight: 700;
       color: var(--p1);
-      margin-top: 3px;
+      margin-top: 4px;
+      letter-spacing: -0.2px;
     }
 
     .fgi-header {
@@ -173,11 +179,11 @@
       text-decoration: none;
       color: var(--p1);
       display: inline-block;
-      letter-spacing: -0.3px;
+      letter-spacing: -0.4px;
     }
 
     .fgi-info-box {
-      flex: 1;
+      flex: 1.15;
       min-width: 0;
       display: flex;
       flex-direction: column;
@@ -232,7 +238,7 @@
     .refresh-btn:active { background: #222; }
 
     /* =============================================================================
-       위젯 전용 4x2 풀-와이드 반응형 스타일 (좌우 여백 제거)
+       iOS 스크립테이블 1:1 완벽 대응 위젯 스타일
        ============================================================================= */
     body.is-widget {
       width: 100vw;
@@ -240,7 +246,7 @@
       max-width: 100vw;
       max-height: 100vh;
       margin: 0;
-      padding: 4px 6px;
+      padding: 8px 12px;
       overflow: hidden;
       display: flex;
       flex-direction: column;
@@ -263,8 +269,8 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 8px 12px;
-      border-radius: 18px;
+      padding: 10px 14px 8px 14px;
+      border-radius: 20px;
       border: 1px solid #1c1c1e;
       background: #000000;
       box-sizing: border-box;
@@ -274,24 +280,25 @@
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      margin-bottom: 2px;
+      margin-bottom: 1px;
     }
 
     body.is-widget .title,
     body.is-widget .fgi-header {
-      font-size: clamp(14px, 3.8vw, 17.5px) !important;
+      font-size: 16px !important;
       font-weight: 700;
-      letter-spacing: -0.3px;
+      letter-spacing: -0.4px;
+      color: #FFFFFF;
     }
 
     body.is-widget .version {
-      font-size: clamp(8.5px, 2vw, 10.5px) !important;
-      color: #888888;
+      font-size: 9.5px !important;
+      color: #7c7c80;
     }
 
     body.is-widget .updated-time {
-      font-size: clamp(9.5px, 2.3vw, 11.5px) !important;
-      margin-bottom: 4px;
+      font-size: 10.5px !important;
+      margin-bottom: 5px;
       color: #FFFFFF;
     }
 
@@ -306,7 +313,7 @@
     }
 
     body.is-widget .chart-box {
-      flex: 1.45;
+      flex: 1.05;
       height: 100%;
       display: flex;
       align-items: center;
@@ -322,7 +329,7 @@
     }
 
     body.is-widget .info-box {
-      flex: 1;
+      flex: 1.15;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -332,31 +339,35 @@
     }
 
     body.is-widget .sig-row {
-      font-size: clamp(13.5px, 3.6vw, 16.5px) !important;
+      font-size: 15.5px !important;
       font-weight: 700;
       line-height: 1.25;
       white-space: nowrap;
+      letter-spacing: -0.2px;
     }
 
     body.is-widget .token-action {
-      margin-left: 5px;
+      margin-left: 6px;
+      color: #FFFFFF;
     }
 
     body.is-widget .status-text {
-      font-size: clamp(10.5px, 2.6vw, 12.5px) !important;
-      margin-top: 2px;
-      white-space: nowrap;
-    }
-
-    body.is-widget .dd-text {
-      font-size: clamp(11px, 2.7vw, 13px) !important;
-      font-weight: 600;
+      font-size: 10.5px !important;
+      color: #9a9aa0;
       margin-top: 3px;
       white-space: nowrap;
     }
 
+    body.is-widget .dd-text {
+      font-size: 11.5px !important;
+      font-weight: 700;
+      color: #FFFFFF;
+      margin-top: 4px;
+      white-space: nowrap;
+    }
+
     body.is-widget .fgi-info-box {
-      flex: 1;
+      flex: 1.15;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -366,14 +377,14 @@
     }
 
     body.is-widget .fgi-rating {
-      font-size: clamp(13.5px, 3.5vw, 16.5px) !important;
+      font-size: 15px !important;
       font-weight: 700;
       margin-top: 2px;
       white-space: nowrap;
     }
 
     body.is-widget .fgi-stats {
-      font-size: clamp(11.5px, 2.8vw, 14px) !important;
+      font-size: 13px !important;
       gap: 4px;
       white-space: nowrap;
     }
@@ -461,7 +472,7 @@
       extremeGreed: "#b07cc0"
     };
 
-    // 3배 슈퍼샘플링 초고화질 캔버스 컨텍스트 (와이드 비율)
+    // 3배 슈퍼샘플링 초고화질 캔버스 컨텍스트
     function getHDContext(canvasId, logicalW, logicalH) {
       const cvs = document.getElementById(canvasId);
       if (!cvs) return null;
@@ -503,9 +514,9 @@
       }
     }
 
-    // 4x2 위젯에 맞춘 풀-와이드 밴드 차트 (620 x 280)
+    // iOS 스크립테이블과 동일한 다이내믹 밴드 차트 (480 x 280)
     function drawBandChart(canvasId, closes, sma, upB, dnB) {
-      const W = 620, H = 280;
+      const W = 480, H = 280;
       const cv = getHDContext(canvasId, W, H);
       if (!cv) return;
       const { ctx } = cv;
@@ -523,7 +534,7 @@
 
       const trans = (v, i) => ({
         x: 10 + (i / (SIZE - 1)) * (W - 20),
-        y: (H - 15) - ((v - min) / range) * (H - 30),
+        y: (H - 12) - ((v - min) / range) * (H - 24),
       });
 
       const plot = (dat, col, wid) => {
@@ -542,14 +553,14 @@
         ctx.stroke();
       };
 
-      plot(uSet.map(trans), C.upperBand, 3.5);
-      plot(lSet.map(trans), C.lowerBand, 3.5);
-      plot(pSet.map(trans), C.cp, 5.5);
+      plot(uSet.map(trans), C.upperBand, 3.2);
+      plot(lSet.map(trans), C.lowerBand, 3.2);
+      plot(pSet.map(trans), C.cp, 5.0);
     }
 
-    // 4x2 위젯 풀-와이드 FGI 히스토리 차트 (580 x 280)
+    // iOS 스크립테이블과 동일한 FGI 히스토리 차트 (480 x 280)
     function drawFGIChart(canvasId, data) {
-      const W = 580, H = 280;
+      const W = 480, H = 280;
       const cv = getHDContext(canvasId, W, H);
       if (!cv) return;
       const { ctx } = cv;
@@ -635,6 +646,7 @@
       ctx.fillText(val.toFixed(0), lx, ly);
     }
 
+    // iOS 스크립테이블과 100% 동일한 토큰 & 액션 렌더링
     function renderTokens(containerId, sig) {
       const el = document.getElementById(containerId);
       if (!el || !sig) return;
@@ -662,7 +674,7 @@
       });
 
       html += `
-        <div class="status-text" style="color: ${sig.isAlert ? C.alert : C.p2}">${sig.n}</div>
+        <div class="status-text" style="color: ${sig.isAlert ? C.alert : 'var(--status-p)'}">${sig.n}</div>
         <div class="dd-text">${sig.ddStr}</div>
       `;
       el.innerHTML = html;
