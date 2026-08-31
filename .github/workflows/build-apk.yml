@@ -27,7 +27,7 @@ jobs:
           cp index.html www/
           npm init -y
           npm install @capacitor/core @capacitor/cli @capacitor/android
-          npx cap init "200SPX" "com.jinwook0904.github.io/200SPX" --web-dir="www"
+          npx cap init "200SPX" "com.jinwook.spx200" --web-dir="www"
 
           node -e '
           const fs = require("fs");
@@ -242,7 +242,6 @@ jobs:
                           );
                           webView.layout(0, 0, widthPx, heightPx);
 
-                          // 초고속 즉시 캡처 실행 함수
                           Runnable doCapture = () -> {
                               try {
                                   Bitmap bitmap = Bitmap.createBitmap(widthPx, heightPx, Bitmap.Config.ARGB_8888);
@@ -271,7 +270,6 @@ jobs:
                               } catch (Exception ignored) {}
                           };
 
-                          // 웹뷰 JS에서 그리기 완료 신호를 즉시 수신하는 브릿지 인터페이스
                           webView.addJavascriptInterface(new Object() {
                               @JavascriptInterface
                               public void onRenderComplete() {
@@ -279,7 +277,6 @@ jobs:
                               }
                           }, "AndroidBridge");
 
-                          // 네트워크 지연 시 안전 타임아웃 백업 (최대 2.2초)
                           new Handler(Looper.getMainLooper()).postDelayed(doCapture, 2200);
 
                           webView.loadUrl(getUrl());
