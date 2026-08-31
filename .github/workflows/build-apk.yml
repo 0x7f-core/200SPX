@@ -69,7 +69,7 @@ jobs:
               dim="${size%%:*}"
               res="${size##*:}"
               mkdir -p "android/app/src/main/res/mipmap-${res}"
-              inner_dim=$(awk "BEGIN {printf \"%d\", $dim * 0.72}")
+              inner_dim=$(awk "BEGIN {printf \"\%d\", $dim * 0.72}")
               convert icon.png -resize "${inner_dim}x${inner_dim}" -gravity center -background none -extent "${dim}x${dim}" "android/app/src/main/res/mipmap-${res}/ic_launcher_foreground.png"
             done
           fi
@@ -180,12 +180,49 @@ jobs:
           import android.webkit.WebView;
           import android.widget.RemoteViews;
 
+          import java.util.Calendar;
+          import java.util.TimeZone;
+
           public abstract class BaseWidgetProvider extends AppWidgetProvider {
               protected abstract String getUrl();
+              public static final String ACTION_MANUAL_REFRESH = "com.core0x7f.spx200.MANUAL_REFRESH";
+
+              // 미국 뉴욕 정규장 시간 + 장 마감 후 정산 45분 (월~금 09:30 ~ 16:45, 서머타임 자동 계산)
+              private boolean isUsMarketOpen() {
+                  try {
+                      Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("America/New_York"));
+                      int day = cal.get(Calendar.DAY_OF_WEEK);
+                      if (day == Calendar.SATURDAY || day == Calendar.SUNDAY) {
+                          return false; // 주말 장외
+                      }
+                      int minuteOfDay = cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE);
+                      return minuteOfDay >= (9 * 60 + 30) && minuteOfDay <= (16 * 60 + 45); // 09:30 ~ 16:45 (정산 완료)
+                  } catch (Exception e) {
+                      return true;
+                  }
+              }
+
+              @Override
+              public void onReceive(Context context, Intent intent) {
+                  super.onReceive(context, intent);
+                  if (ACTION_MANUAL_REFRESH.equals(intent.getAction())) {
+                      AppWidgetManager mgr = AppWidgetManager.getInstance(context);
+                      int[] ids = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS);
+                      if (ids != null) {
+                          for (int id : ids) updateAppWidget(context, mgr, id);
+                      }
+                  }
+              }
 
               @Override
               public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-                  for (int id : appWidgetIds) updateAppWidget(context, appWidgetManager, id);
+                  // 시스템 30분 자동 알람: 정규장 + 종가 정산 시간이 아닐 경우 배터리 소모 0으로 건너뜀
+                  if (!isUsMarketOpen()) {
+                      return;
+                  }
+                  for (int id : appWidgetIds) {
+                      updateAppWidget(context, appWidgetManager, id);
+                  }
               }
 
               @Override
@@ -214,137 +251,4 @@ jobs:
                               }
                           }
 
-                          float scale = Math.max(dm.density * 1.35f, 3.5f);
-                          int widthPx = Math.max((int) (widthDp * scale), 900);
-                          int heightPx = Math.max((int) (heightDp * scale), 360);
-
-                          WebView webView = new WebView(context.getApplicationContext());
-                          webView.setBackgroundColor(0xFF000000);
-                          webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-
-                          WebSettings settings = webView.getSettings();
-                          settings.setJavaScriptEnabled(true);
-                          settings.setDomStorageEnabled(true);
-                          settings.setDatabaseEnabled(true);
-                          settings.setCacheMode(WebSettings.LOAD_DEFAULT);
-
-                          webView.measure(
-                              View.MeasureSpec.makeMeasureSpec(widthPx, View.MeasureSpec.EXACTLY),
-                              View.MeasureSpec.makeMeasureSpec(heightPx, View.MeasureSpec.EXACTLY)
-                          );
-                          webView.layout(0, 0, widthPx, heightPx);
-
-                          Runnable doCapture = () -> {
-                              try {
-                                  Bitmap bitmap = Bitmap.createBitmap(widthPx, heightPx, Bitmap.Config.ARGB_8888);
-                                  Canvas canvas = new Canvas(bitmap);
-                                  canvas.drawColor(0xFF000000);
-                                  webView.draw(canvas);
-
-                                  RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.spx_widget_layout);
-                                  views.setImageViewBitmap(R.id.widget_image, bitmap);
-
-                                  Intent appIntent = new Intent(context, MainActivity.class);
-                                  views.setOnClickPendingIntent(
-                                      R.id.widget_image,
-                                      PendingIntent.getActivity(context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE)
-                                  );
-
-                                  Intent refreshIntent = new Intent(context, BaseWidgetProvider.this.getClass());
-                                  refreshIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-                                  refreshIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[]{appWidgetId});
-                                  views.setOnClickPendingIntent(
-                                      R.id.btn_refresh,
-                                      PendingIntent.getBroadcast(context, appWidgetId, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE)
-                                  );
-
-                                  appWidgetManager.updateAppWidget(appWidgetId, views);
-                              } catch (Exception ignored) {}
-                          };
-
-                          webView.addJavascriptInterface(new Object() {
-                              @JavascriptInterface
-                              public void onRenderComplete() {
-                                  new Handler(Looper.getMainLooper()).postDelayed(doCapture, 30);
-                              }
-                          }, "AndroidBridge");
-
-                          new Handler(Looper.getMainLooper()).postDelayed(doCapture, 2000);
-                          webView.loadUrl(getUrl());
-                      } catch (Exception ignored) {}
-                  });
-              }
-          }
-          EOF
-
-          cat << 'EOF' > android/app/src/main/java/com/core0x7f/spx200/SPXWidgetProvider.java
-          package com.core0x7f.spx200;
-          public class SPXWidgetProvider extends BaseWidgetProvider {
-              @Override
-              protected String getUrl() {
-                  return "https://0x7f-core.github.io/200SPX/?v=spx";
-              }
-          }
-          EOF
-
-          cat << 'EOF' > android/app/src/main/java/com/core0x7f/spx200/QQQWidgetProvider.java
-          package com.core0x7f.spx200;
-          public class QQQWidgetProvider extends BaseWidgetProvider {
-              @Override
-              protected String getUrl() {
-                  return "https://0x7f-core.github.io/200SPX/?v=qqq";
-              }
-          }
-          EOF
-
-          cat << 'EOF' > android/app/src/main/java/com/core0x7f/spx200/FGIWidgetProvider.java
-          package com.core0x7f.spx200;
-          public class FGIWidgetProvider extends BaseWidgetProvider {
-              @Override
-              protected String getUrl() {
-                  return "https://0x7f-core.github.io/200SPX/?v=fgi";
-              }
-          }
-          EOF
-
-          node -e '
-          const fs = require("fs");
-          const file = "android/app/src/main/AndroidManifest.xml";
-          let content = fs.readFileSync(file, "utf8");
-          const receivers = `
-                  <receiver android:name=".SPXWidgetProvider" android:label="200슨피단 (SPX)" android:exported="true">
-                      <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
-                      <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_spx_info" />
-                  </receiver>
-                  <receiver android:name=".QQQWidgetProvider" android:label="200큐큐단 (QQQ)" android:exported="true">
-                      <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
-                      <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_qqq_info" />
-                  </receiver>
-                  <receiver android:name=".FGIWidgetProvider" android:label="공포와 탐욕 지수 (CNN FGI)" android:exported="true">
-                      <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
-                      <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_fgi_info" />
-                  </receiver>
-          `;
-          content = content.replace("</application>", receivers + "\n    </application>");
-          fs.writeFileSync(file, content);
-          '
-
-          cat << 'EOF' >> android/app/build.gradle
-
-          configurations.all {
-              exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
-              exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
-          }
-          EOF
-
-      - name: Build Android Debug APK
-        run: |
-          cd android
-          chmod +x gradlew
-          ./gradlew assembleDebug
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: 200SPX-Optimized-APK
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+                          float scale = Math
