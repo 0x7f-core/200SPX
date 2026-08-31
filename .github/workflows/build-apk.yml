@@ -33,7 +33,6 @@ jobs:
 
       - name: Set App Name to 200SPX
         run: |
-          # 안드로이드 앱 이름을 '200SPX'로 명시적 지정
           cat << 'EOF' > android/app/src/main/res/values/strings.xml
           <?xml version='1.0' encoding='utf-8'?>
           <resources>
@@ -47,6 +46,9 @@ jobs:
       - name: Apply Custom App Icon
         run: |
           if [ -f "icon.png" ]; then
+            echo "Installing ImageMagick..."
+            sudo apt-get update && sudo apt-get install -y imagemagick
+            
             echo "Applying custom app icon..."
             for size in 48:mdpi 72:hdpi 96:xhdpi 144:xxhdpi 192:xxxhdpi; do
               dim="${size%%:*}"
@@ -58,6 +60,7 @@ jobs:
             for size in 108:mdpi 162:hdpi 216:xhdpi 324:xxhdpi 432:xxxhdpi; do
               dim="${size%%:*}"
               res="${size##*:}"
+              mkdir -p "android/app/src/main/res/mipmap-${res}"
               convert icon.png -resize "${dim}x${dim}" "android/app/src/main/res/mipmap-${res}/ic_launcher_foreground.png"
             done
           fi
