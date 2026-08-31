@@ -112,7 +112,7 @@
     body:not(.is-widget) .title,
     body:not(.is-widget) .fgi-header {
       font-size: 16.5px;
-      font-weight: 700;
+      font-weight: 600;
       text-decoration: none;
       color: var(--p1);
       letter-spacing: -0.4px;
@@ -161,7 +161,7 @@
 
     body:not(.is-widget) .sig-row {
       font-size: 16px;
-      font-weight: 700;
+      font-weight: 600;
       line-height: 1.25;
       display: flex;
       align-items: center;
@@ -172,7 +172,7 @@
     body:not(.is-widget) .token-action {
       margin-left: 6px;
       color: var(--p1);
-      font-weight: 700;
+      font-weight: 600;
     }
 
     body:not(.is-widget) .status-text {
@@ -185,7 +185,7 @@
 
     body:not(.is-widget) .dd-text {
       font-size: 12.5px;
-      font-weight: 700;
+      font-weight: 600;
       color: var(--p1);
       margin-top: 4px;
       letter-spacing: -0.2px;
@@ -204,14 +204,14 @@
 
     body:not(.is-widget) .fgi-rating {
       font-size: 16px;
-      font-weight: 700;
+      font-weight: 600;
       margin-top: 2px;
       letter-spacing: -0.2px;
     }
 
     body:not(.is-widget) .fgi-stats {
       font-size: 13.5px;
-      font-weight: 600;
+      font-weight: 500;
       margin-top: 2px;
       display: flex;
       align-items: center;
@@ -257,7 +257,7 @@
     .token-sgov { color: var(--sgov); }
     .token-dot  { color: var(--dot); margin: 0 1px; }
     .token-alert  { color: var(--alert); }
-    .fgi-slash  { color: var(--slash); font-weight: 700; }
+    .fgi-slash  { color: var(--slash); font-weight: 600; }
 
     .loading-wrap {
       display: flex;
@@ -301,7 +301,7 @@
       display: none !important;
     }
 
-    /* 위젯별 격리: 요청된 1개 카드 외에는 완전 숨김 강제 */
+    /* 위젯별 격리: 요청된 1개 카드 외에는 완전 숨김 */
     body.view-spx #card-qqq,
     body.view-spx #card-fgi {
       display: none !important;
@@ -342,7 +342,7 @@
     body.is-widget .title,
     body.is-widget .fgi-header {
       font-size: min(4.6vw, 9.6vh) !important;
-      font-weight: 700 !important;
+      font-weight: 600 !important;
       letter-spacing: -0.4px !important;
       color: #FFFFFF !important;
       line-height: 1.1 !important;
@@ -351,7 +351,7 @@
 
     body.is-widget .version {
       font-size: min(2.7vw, 5.6vh) !important;
-      color: #7c7c80 !important;
+      color: #7c7c80;
       line-height: 1 !important;
       white-space: nowrap !important;
     }
@@ -359,7 +359,7 @@
     body.is-widget .updated-time {
       font-size: min(3.0vw, 6.4vh) !important;
       margin-bottom: 0.8vh !important;
-      color: #FFFFFF !important;
+      color: #FFFFFF;
       line-height: 1.1 !important;
       white-space: nowrap !important;
     }
@@ -402,7 +402,7 @@
 
     body.is-widget .sig-row {
       font-size: min(4.8vw, 10.0vh) !important;
-      font-weight: 700 !important;
+      font-weight: 600 !important;
       line-height: 1.2 !important;
       white-space: nowrap !important;
       letter-spacing: -0.3px !important;
@@ -411,7 +411,7 @@
     body.is-widget .token-action {
       margin-left: 1.2vw !important;
       color: #FFFFFF !important;
-      font-weight: 700 !important;
+      font-weight: 600 !important;
     }
 
     body.is-widget .status-text {
@@ -424,7 +424,7 @@
 
     body.is-widget .dd-text {
       font-size: min(3.6vw, 7.8vh) !important;
-      font-weight: 700 !important;
+      font-weight: 600 !important;
       color: #FFFFFF !important;
       margin-top: 0.5vh !important;
       white-space: nowrap !important;
@@ -443,7 +443,7 @@
 
     body.is-widget .fgi-rating {
       font-size: min(4.6vw, 9.6vh) !important;
-      font-weight: 700 !important;
+      font-weight: 600 !important;
       margin-top: 0.4vh !important;
       white-space: nowrap !important;
     }
@@ -452,7 +452,7 @@
       font-size: min(3.6vw, 7.6vh) !important;
       gap: 1.5vw !important;
       white-space: nowrap !important;
-      font-weight: 600 !important;
+      font-weight: 500 !important;
     }
   </style>
 </head>
@@ -542,7 +542,7 @@
       extremeGreed: "#b07cc0"
     };
 
-    // 진입 즉시 URL 파라미터 감지하여 클래스 주입 (깜빡임 및 동시 출력 완벽 방지)
+    // 진입 즉시 URL 파라미터 감지하여 클래스 주입
     const urlParams = new URLSearchParams(window.location.search);
     const viewParam = urlParams.get('v');
     if (viewParam) {
@@ -676,7 +676,7 @@
       });
     }
 
-    // Scriptable drawGauge 1:1 완벽 구현
+    // Scriptable drawGauge 1:1 완벽 구현 (600 SemiBold 라벨)
     function drawGauge(canvasId, val) {
       const W = 320, H = 180;
       const cv = getHDContext(canvasId, W, H);
@@ -718,7 +718,7 @@
       const lx = cx + Math.cos(needleAngle) * labelDist;
       const ly = cy + Math.sin(needleAngle) * labelDist;
       ctx.fillStyle = C.p1;
-      ctx.font = "bold 23px -apple-system, sans-serif";
+      ctx.font = "600 23px -apple-system, sans-serif";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText(val.toFixed(0), lx, ly);
