@@ -5,9 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>A Godly Investor's True Quest</title>
   <script>
-    // 0ms 레이아웃 시프트 방지: 파라미터 감지 즉시 위젯 클래스 주입
-    const vParam = new URLSearchParams(window.location.search).get('v');
-    if (vParam) document.documentElement.className = `is-widget view-${vParam}`;
+    const v = new URLSearchParams(location.search).get('v');
+    if (v) document.documentElement.className = `is-widget view-${v}`;
   </script>
   <style>
     :root {
@@ -37,58 +36,36 @@
       --extremeGreed: #b07cc0;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    a, a:visited, a:hover, a:active {
-      text-decoration: none !important;
-      color: inherit;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    a { text-decoration: none; color: inherit; }
 
     html, body {
       width: 100%;
       height: 100%;
-      background-color: var(--bg) !important;
+      background: var(--bg);
       color: var(--p1);
-      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "SF Pro Display", "SF Pro Text", "Pretendard", "Roboto", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "SF Pro Display", "Pretendard", Roboto, sans-serif;
       -webkit-font-smoothing: antialiased;
       user-select: none;
     }
 
-    canvas {
-      width: 100%;
-      height: auto;
-      display: block;
-      image-rendering: -webkit-optimize-contrast;
-      image-rendering: crisp-edges;
-    }
+    canvas { width: 100%; height: auto; display: block; image-rendering: -webkit-optimize-contrast; }
 
     .token-tqqq { color: var(--tqqq); }
     .token-spym { color: var(--spym); }
     .token-sgov { color: var(--sgov); }
-    .token-dot  { color: var(--dot); margin: 0 1px; }
+    .token-dot { color: var(--dot); margin: 0 1px; }
     .token-action { color: var(--p1); font-weight: 600; margin-left: 6px; }
-    .token-alert  { color: var(--alert); }
-    .fgi-slash  { color: var(--slash); font-weight: 600; }
+    .token-alert { color: var(--alert); }
+    .fgi-slash { color: var(--slash); font-weight: 600; }
 
-    .loading-wrap {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 70vh;
-      color: var(--p2);
-      font-size: 13px;
-    }
+    .loading-wrap { display: flex; justify-content: center; align-items: center; height: 70vh; color: var(--p2); font-size: 13px; }
 
     /* =============================================================================
-       1. 일반 웹 / 태블릿 / PC 대시보드 모드
+       1. 일반 웹 브라우저 대시보드 뷰
        ============================================================================= */
     html:not(.is-widget) body {
-      padding: calc(14px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom)) 16px;
+      padding: calc(14px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom));
       overflow-y: auto;
       display: flex;
       justify-content: center;
@@ -104,14 +81,8 @@
     }
 
     @media (min-width: 768px) {
-      html:not(.is-widget) .widget-container {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 18px;
-      }
-      html:not(.is-widget) #card-fgi,
-      html:not(.is-widget) .btn-wrap {
-        grid-column: span 2;
-      }
+      html:not(.is-widget) .widget-container { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+      html:not(.is-widget) #card-fgi, html:not(.is-widget) .btn-wrap { grid-column: span 2; }
     }
 
     html:not(.is-widget) .card {
@@ -124,287 +95,57 @@
       justify-content: space-between;
     }
 
-    html:not(.is-widget) .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 4px;
-    }
-
-    html:not(.is-widget) .title,
-    html:not(.is-widget) .fgi-header {
-      font-size: 16.5px;
-      font-weight: 600;
-      letter-spacing: -0.4px;
-    }
-
-    html:not(.is-widget) .version {
-      font-size: 9.5px;
-      color: var(--p2);
-      font-weight: 400;
-    }
-
-    html:not(.is-widget) .updated-time {
-      font-size: 11px;
-      font-weight: 400;
-      margin-bottom: 12px;
-      letter-spacing: -0.2px;
-      color: var(--p1);
-    }
-
-    html:not(.is-widget) .content-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      flex: 1;
-    }
-
-    html:not(.is-widget) .chart-box {
-      flex: 1.15;
-      min-width: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    html:not(.is-widget) .info-box {
-      flex: 1;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 4px;
-      padding-left: 6px;
-    }
-
-    html:not(.is-widget) .fgi-info-box {
-      flex: 1;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      gap: 4px;
-    }
-
-    html:not(.is-widget) .sig-row {
-      font-size: 16px;
-      font-weight: 600;
-      line-height: 1.25;
-      letter-spacing: -0.3px;
-    }
-
-    html:not(.is-widget) .status-text {
-      font-size: 11.5px;
-      color: var(--status-p);
-      font-weight: 400;
-      margin-top: 3px;
-    }
-
-    html:not(.is-widget) .dd-text {
-      font-size: 12.5px;
-      font-weight: 600;
-      margin-top: 4px;
-    }
-
-    html:not(.is-widget) .fgi-rating {
-      font-size: 16px;
-      font-weight: 600;
-      margin-top: 2px;
-    }
-
-    html:not(.is-widget) .fgi-stats {
-      font-size: 13.5px;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
+    html:not(.is-widget) .card-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+    html:not(.is-widget) .title, html:not(.is-widget) .fgi-header { font-size: 16.5px; font-weight: 600; letter-spacing: -0.4px; }
+    html:not(.is-widget) .version { font-size: 9.5px; color: var(--p2); font-weight: 400; }
+    html:not(.is-widget) .updated-time { font-size: 11px; font-weight: 400; margin-bottom: 12px; letter-spacing: -0.2px; color: var(--p1); }
+    html:not(.is-widget) .content-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex: 1; }
+    html:not(.is-widget) .chart-box { flex: 1.15; min-width: 0; display: flex; align-items: center; justify-content: center; }
+    html:not(.is-widget) .info-box { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: 4px; padding-left: 6px; }
+    html:not(.is-widget) .fgi-info-box { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 4px; }
+    html:not(.is-widget) .sig-row { font-size: 16px; font-weight: 600; line-height: 1.25; letter-spacing: -0.3px; }
+    html:not(.is-widget) .status-text { font-size: 11.5px; color: var(--status-p); font-weight: 400; margin-top: 3px; }
+    html:not(.is-widget) .dd-text { font-size: 12.5px; font-weight: 600; margin-top: 4px; }
+    html:not(.is-widget) .fgi-rating { font-size: 16px; font-weight: 600; margin-top: 2px; }
+    html:not(.is-widget) .fgi-stats { font-size: 13.5px; font-weight: 500; display: flex; align-items: center; gap: 6px; }
     html:not(.is-widget) .btn-wrap { width: 100%; }
     html:not(.is-widget) .refresh-btn {
-      width: 100%;
-      background: #141416;
-      border: 1px solid var(--divider);
-      color: var(--p2);
-      padding: 14px;
-      border-radius: 16px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.15s ease;
+      width: 100%; background: #141416; border: 1px solid var(--divider); color: var(--p2);
+      padding: 14px; border-radius: 16px; font-size: 14px; font-weight: 600; cursor: pointer;
     }
     html:not(.is-widget) .refresh-btn:active { background: #222226; color: var(--p1); }
 
     /* =============================================================================
-       2. 안드로이드 홈 화면 위젯 전용 모드 (html.is-widget)
+       2. 안드로이드 홈 화면 위젯 모드 (iOS Scriptable 1:1 매칭)
        ============================================================================= */
-    html.is-widget body {
-      padding: 2.2vh 2.8vw;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    html.is-widget .widget-container {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-    }
-
+    html.is-widget body { padding: 2.2vh 2.8vw; overflow: hidden; display: flex; flex-direction: column; justify-content: center; }
+    html.is-widget .widget-container { width: 100%; height: 100%; display: flex; flex-direction: column; }
     html.is-widget .btn-wrap { display: none !important; }
 
-    /* 요청된 뷰만 남기고 격리 */
     html.view-spx #card-qqq, html.view-spx #card-fgi { display: none !important; }
     html.view-qqq #card-spx, html.view-qqq #card-fgi { display: none !important; }
     html.view-fgi #card-spx, html.view-fgi #card-qqq { display: none !important; }
 
     html.is-widget .card {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 2.6vh 3.2vw 2.4vh 3.2vw;
-      border-radius: 20px;
-      border: 1px solid #1c1c1e;
-      background: var(--card-bg);
+      width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between;
+      padding: 2.6vh 3.2vw 2.4vh 3.2vw; border-radius: 20px; border: 1px solid #1c1c1e; background: var(--card-bg);
     }
-
-    html.is-widget .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 0;
-      width: 100%;
-    }
-
-    html.is-widget .title,
-    html.is-widget .fgi-header {
-      font-size: min(4.0vw, 8.5vh);
-      font-weight: 600;
-      letter-spacing: -0.35px;
-      white-space: nowrap;
-      line-height: 1.15;
-    }
-
-    html.is-widget .version {
-      font-size: min(2.4vw, 5.0vh);
-      color: #7c7c80;
-      font-weight: 400;
-      white-space: nowrap;
-    }
-
-    html.is-widget .updated-time {
-      font-size: min(2.6vw, 5.4vh);
-      font-weight: 400;
-      margin-top: 0.6vh !important;
-      margin-bottom: 1.6vh !important;
-      color: #FFFFFF;
-      white-space: nowrap;
-      line-height: 1.15;
-    }
-
-    html.is-widget .content-row {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 2.2vw;
-      min-height: 0;
-    }
-
-    html.is-widget .chart-box {
-      flex: 1.05;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 0;
-    }
-
-    html.is-widget .chart-box canvas {
-      max-height: 100%;
-      height: 100%;
-      object-fit: fill;
-    }
-
-    html.is-widget .info-box {
-      flex: 1.25;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 0.3vh;
-      min-width: 0;
-      padding-left: 0.4vw;
-    }
-
-    html.is-widget .fgi-info-box {
-      flex: 1.25;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      gap: 0.6vh;
-      min-width: 0;
-    }
-
-    html.is-widget .fgi-info-box canvas {
-      max-height: 100%;
-      width: auto;
-      max-width: 100%;
-    }
-
-    html.is-widget .sig-row {
-      font-size: min(3.9vw, 8.3vh);
-      font-weight: 600;
-      line-height: 1.35;
-      white-space: nowrap;
-      letter-spacing: -0.25px;
-    }
-
+    html.is-widget .card-header { display: flex; justify-content: space-between; align-items: baseline; width: 100%; }
+    html.is-widget .title, html.is-widget .fgi-header { font-size: min(4.0vw, 8.5vh); font-weight: 600; letter-spacing: -0.35px; white-space: nowrap; line-height: 1.15; }
+    html.is-widget .version { font-size: min(2.4vw, 5.0vh); color: #7c7c80; font-weight: 400; white-space: nowrap; }
+    html.is-widget .updated-time { font-size: min(2.6vw, 5.4vh); font-weight: 400; margin-top: 0.6vh; margin-bottom: 1.6vh; color: #FFFFFF; white-space: nowrap; line-height: 1.15; }
+    html.is-widget .content-row { flex: 1; display: flex; align-items: center; justify-content: space-between; gap: 2.2vw; min-height: 0; }
+    html.is-widget .chart-box { flex: 1.05; height: 100%; display: flex; align-items: center; justify-content: center; min-width: 0; }
+    html.is-widget .chart-box canvas { max-height: 100%; height: 100%; object-fit: fill; }
+    html.is-widget .info-box { flex: 1.25; display: flex; flex-direction: column; justify-content: center; gap: 0.3vh; min-width: 0; padding-left: 0.4vw; }
+    html.is-widget .fgi-info-box { flex: 1.25; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 0.6vh; min-width: 0; }
+    html.is-widget .fgi-info-box canvas { max-height: 100%; width: auto; max-width: 100%; }
+    html.is-widget .sig-row { font-size: min(3.9vw, 8.3vh); font-weight: 600; line-height: 1.35; white-space: nowrap; letter-spacing: -0.25px; }
     html.is-widget .token-action { margin-left: 0.8vw; }
-
-    html.is-widget .status-text {
-      font-size: min(2.55vw, 5.3vh);
-      color: #9a9aa0;
-      font-weight: 400;
-      margin-top: 0.9vh !important;
-      white-space: nowrap;
-      letter-spacing: -0.25px;
-    }
-
-    html.is-widget .dd-text {
-      font-size: min(2.9vw, 6.2vh);
-      font-weight: 600;
-      color: #FFFFFF;
-      margin-top: 0.9vh !important;
-      white-space: nowrap;
-      letter-spacing: -0.25px;
-    }
-
-    html.is-widget .fgi-rating {
-      font-size: min(3.9vw, 8.2vh);
-      font-weight: 600;
-      margin-top: 0.6vh;
-      white-space: nowrap;
-    }
-
-    html.is-widget .fgi-stats {
-      font-size: min(2.9vw, 6.2vh);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 1.2vw;
-      margin-top: 0.4vh;
-      white-space: nowrap;
-      font-weight: 500;
-    }
+    html.is-widget .status-text { font-size: min(2.55vw, 5.3vh); color: var(--status-p); font-weight: 400; margin-top: 0.9vh; white-space: nowrap; letter-spacing: -0.25px; }
+    html.is-widget .dd-text { font-size: min(2.9vw, 6.2vh); font-weight: 600; color: #FFFFFF; margin-top: 0.9vh; white-space: nowrap; letter-spacing: -0.25px; }
+    html.is-widget .fgi-rating { font-size: min(3.9vw, 8.2vh); font-weight: 600; margin-top: 0.6vh; white-space: nowrap; }
+    html.is-widget .fgi-stats { font-size: min(2.9vw, 6.2vh); display: flex; align-items: center; justify-content: center; gap: 1.2vw; margin-top: 0.4vh; white-space: nowrap; font-weight: 500; }
   </style>
 </head>
 <body>
@@ -458,7 +199,7 @@
 
   <script>
     const WORKER_URL = "https://spx-indicator-api.0x7f-core.workers.dev";
-    const CACHE_KEY  = "SPX_INDICATOR_CACHE_V3";
+    const CACHE_KEY = "SPX_INDICATOR_CACHE_V3";
 
     const C = {
       p1: "#FFFFFF",
@@ -485,62 +226,51 @@
       }
     }
 
-    function getHDContext(canvasId, logicalW, logicalH) {
+    function getHDContext(canvasId, W, H) {
       const cvs = document.getElementById(canvasId);
       if (!cvs) return null;
       const dpr = Math.min(window.devicePixelRatio || 2, 3);
-      cvs.width = logicalW * dpr;
-      cvs.height = logicalH * dpr;
-      cvs.style.aspectRatio = `${logicalW} / ${logicalH}`;
+      cvs.width = W * dpr;
+      cvs.height = H * dpr;
+      cvs.style.aspectRatio = `${W} / ${H}`;
       const ctx = cvs.getContext("2d");
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = "high";
-      ctx.resetTransform?.();
       ctx.scale(dpr, dpr);
-      return { ctx, W: logicalW, H: logicalH };
+      return ctx;
     }
 
-    function etfColorClass(token) {
-      if (token.includes("TQQQ")) return "token-tqqq";
-      if (token.includes("SPYM")) return "token-spym";
-      if (token.includes("SGOV")) return "token-sgov";
-      return "";
-    }
+    const etfClass = (t) => t.includes("TQQQ") ? "token-tqqq" : t.includes("SPYM") ? "token-spym" : t.includes("SGOV") ? "token-sgov" : "";
 
-    function fgiColor(val) {
-      if (val >= 75) return C.extremeGreed;
-      if (val >= 55) return C.greed;
-      if (val >= 45) return C.neutral;
-      if (val >= 25) return C.fear;
+    function fgiColor(v) {
+      if (v >= 75) return C.extremeGreed;
+      if (v >= 55) return C.greed;
+      if (v >= 45) return C.neutral;
+      if (v >= 25) return C.fear;
       return C.extremeFear;
     }
 
-    function translateRating(rating) {
-      switch ((rating || "").toLowerCase()) {
-        case "extreme fear":  return "극공포 (Extreme Fear)";
-        case "fear":          return "공포 (Fear)";
-        case "neutral":       return "중립 (Neutral)";
-        case "greed":         return "탐욕 (Greed)";
-        case "extreme greed": return "극탐욕 (Extreme Greed)";
-        default:              return rating || "-";
-      }
+    function translateRating(r) {
+      const m = { "extreme fear": "극공포 (Extreme Fear)", "fear": "공포 (Fear)", "neutral": "중립 (Neutral)", "greed": "탐욕 (Greed)", "extreme greed": "극탐욕 (Extreme Greed)" };
+      return m[(r || "").toLowerCase()] || r || "-";
     }
 
     function drawBandChart(canvasId, closes, sma, upB, dnB) {
-      const W = 520, H = 260;
-      const cv = getHDContext(canvasId, W, H);
-      if (!cv) return;
-      const { ctx } = cv;
+      const W = 520, H = 260, ctx = getHDContext(canvasId, W, H);
+      if (!ctx) return;
 
       const SIZE = 90;
-      const pSet = closes.slice(-SIZE);
-      const sSet = sma.slice(-SIZE);
+      const pSet = closes.slice(-SIZE), sSet = sma.slice(-SIZE);
       const uSet = sSet.map(v => isNaN(v) ? NaN : v * (1 + upB));
       const lSet = sSet.map(v => isNaN(v) ? NaN : v * (1 - dnB));
 
-      const all = pSet.concat(uSet, lSet).filter(v => !isNaN(v));
-      const min = Math.min(...all), max = Math.max(...all);
-      const range = (max - min) === 0 ? 1 : (max - min);
+      let min = Infinity, max = -Infinity;
+      for (let i = 0; i < SIZE; i++) {
+        [pSet[i], uSet[i], lSet[i]].forEach(v => {
+          if (!isNaN(v)) { if (v < min) min = v; if (v > max) max = v; }
+        });
+      }
+      const range = (max - min) || 1;
 
       const trans = (v, i) => ({
         x: 8 + (i / (SIZE - 1)) * (W - 16),
@@ -550,12 +280,13 @@
       const plot = (dat, col, wid) => {
         ctx.beginPath();
         let started = false;
-        dat.forEach(pt => {
+        for (let i = 0; i < dat.length; i++) {
+          const pt = dat[i];
           if (!isNaN(pt.y)) {
             if (!started) { ctx.moveTo(pt.x, pt.y); started = true; }
             else ctx.lineTo(pt.x, pt.y);
           }
-        });
+        }
         ctx.strokeStyle = col;
         ctx.lineWidth = wid;
         ctx.lineCap = "round";
@@ -569,48 +300,44 @@
     }
 
     function drawFGIChart(canvasId, data) {
-      const W = 520, H = 260;
-      const cv = getHDContext(canvasId, W, H);
-      if (!cv) return;
-      const { ctx } = cv;
+      const W = 520, H = 260, ctx = getHDContext(canvasId, W, H);
+      if (!ctx) return;
 
       const PAD_L = 6, PAD_R = 6, PAD_T = 10, PAD_B = 10;
       const usableW = W - PAD_L - PAD_R, usableH = H - PAD_T - PAD_B;
-      const toY = (val) => PAD_T + (1 - val / 100) * usableH;
+      const toY = (v) => PAD_T + (1 - v / 100) * usableH;
       const toX = (i) => PAD_L + (i / (data.length - 1)) * usableW;
 
-      [25, 50, 75].forEach(level => {
+      ctx.strokeStyle = "rgba(170, 170, 170, 0.25)";
+      ctx.lineWidth = 1.5;
+      [25, 50, 75].forEach(lvl => {
         ctx.beginPath();
-        ctx.moveTo(PAD_L, toY(level));
-        ctx.lineTo(W - PAD_R, toY(level));
-        ctx.strokeStyle = "rgba(170, 170, 170, 0.25)";
-        ctx.lineWidth = 1.5;
+        ctx.moveTo(PAD_L, toY(lvl));
+        ctx.lineTo(W - PAD_R, toY(lvl));
         ctx.stroke();
       });
 
       ctx.beginPath();
-      data.forEach((d, i) => {
-        const x = toX(i), y = toY(parseFloat(d.y));
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      });
       ctx.strokeStyle = "rgba(255, 255, 255, 0.45)";
       ctx.lineWidth = 2.8;
+      data.forEach((d, i) => {
+        const x = toX(i), y = toY(parseFloat(d.y));
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      });
       ctx.stroke();
 
       data.forEach((d, i) => {
-        ctx.fillStyle = fgiColor(parseFloat(d.y));
+        const yVal = parseFloat(d.y);
+        ctx.fillStyle = fgiColor(yVal);
         ctx.beginPath();
-        ctx.arc(toX(i), toY(parseFloat(d.y)), 5.0, 0, Math.PI * 2);
+        ctx.arc(toX(i), toY(yVal), 5.0, 0, Math.PI * 2);
         ctx.fill();
       });
     }
 
     function drawGauge(canvasId, val) {
-      const W = 320, H = 180;
-      const cv = getHDContext(canvasId, W, H);
-      if (!cv) return;
-      const { ctx } = cv;
+      const W = 320, H = 180, ctx = getHDContext(canvasId, W, H);
+      if (!ctx) return;
 
       const cx = W / 2, cy = H - 20, radius = 120, arcThick = 11;
 
@@ -624,64 +351,50 @@
 
       const needleAngle = Math.PI + (val / 100) * Math.PI;
       const needleLen = radius - 8;
+      ctx.fillStyle = "#FFFFFF";
       for (let i = 0; i < 35; i++) {
         const t = i / 34;
-        ctx.fillStyle = "#FFFFFF";
         ctx.beginPath();
         ctx.arc(cx + Math.cos(needleAngle) * needleLen * t, cy + Math.sin(needleAngle) * needleLen * t, (12 * (1 - t)) / 2, 0, Math.PI * 2);
         ctx.fill();
       }
 
-      ctx.fillStyle = "#FFFFFF";
       ctx.beginPath();
       ctx.arc(cx, cy, 8, 0, Math.PI * 2);
       ctx.fill();
 
-      const lx = cx + Math.cos(needleAngle) * (radius + 22);
-      const ly = cy + Math.sin(needleAngle) * (radius + 22);
       ctx.font = "600 23px -apple-system, sans-serif";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.fillText(val.toFixed(0), lx, ly);
+      ctx.fillText(val.toFixed(0), cx + Math.cos(needleAngle) * (radius + 22), cy + Math.sin(needleAngle) * (radius + 22));
     }
 
     function renderTokens(containerId, sig) {
       const el = document.getElementById(containerId);
       if (!el || !sig) return;
 
-      let html = "";
-      sig.lines.forEach(lineWords => {
-        let tokensHtml = "";
-        lineWords.forEach((token, idx) => {
-          if (idx === 1) {
-            tokensHtml += `<span class="token-action">${token}</span>`;
-          } else if (sig.isAlert) {
-            tokensHtml += `<span class="token-alert">${token}</span>`;
-          } else if (token.includes("·")) {
-            tokensHtml += token.split("·").map((p, i) => `<span class="${etfColorClass(p)}">${p}</span>`).join('<span class="token-dot">·</span>');
-          } else {
-            tokensHtml += `<span class="${etfColorClass(token)}">${token}</span>`;
+      let html = sig.lines.map(lineWords => {
+        const tokens = lineWords.map((token, idx) => {
+          if (idx === 1) return `<span class="token-action">${token}</span>`;
+          if (sig.isAlert) return `<span class="token-alert">${token}</span>`;
+          if (token.includes("·")) {
+            return token.split("·").map(p => `<span class="${etfClass(p)}">${p}</span>`).join('<span class="token-dot">·</span>');
           }
-        });
-        html += `<div class="sig-row">${tokensHtml}</div>`;
-      });
+          return `<span class="${etfClass(token)}">${token}</span>`;
+        }).join('');
+        return `<div class="sig-row">${tokens}</div>`;
+      }).join('');
 
-      html += `
-        <div class="status-text" style="color: ${sig.isAlert ? C.alert : 'var(--status-p)'}">${sig.n}</div>
-        <div class="dd-text">${sig.ddStr}</div>
-      `;
+      html += `<div class="status-text" style="color: ${sig.isAlert ? C.alert : 'var(--status-p)'}">${sig.n}</div>
+               <div class="dd-text">${sig.ddStr}</div>`;
       el.innerHTML = html;
     }
 
     function renderDashboardUI(data) {
-      const formatKSTTime = (ts) => {
-        const kst = new Date(new Date(ts * 1000).toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
-        const yy = String(kst.getFullYear()).slice(-2);
-        const mm = String(kst.getMonth() + 1).padStart(2, '0');
-        const dd = String(kst.getDate()).padStart(2, '0');
-        const hh = String(kst.getHours()).padStart(2, '0');
-        const min = String(kst.getMinutes()).padStart(2, '0');
-        return `${yy}.${mm}.${dd}. ${hh}:${min} 기준`;
+      const formatTime = (ts) => {
+        const k = new Date(new Date(ts * 1000).toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
+        const pad = (n) => String(n).padStart(2, '0');
+        return `${String(k.getFullYear()).slice(-2)}.${pad(k.getMonth() + 1)}.${pad(k.getDate())}. ${pad(k.getHours())}:${pad(k.getMinutes())} 기준`;
       };
 
       if (data.version) {
@@ -689,8 +402,8 @@
         document.getElementById("qqq-ver").innerText = data.version;
       }
 
-      document.getElementById("spx-updated").innerText = formatKSTTime(data.spxTime);
-      document.getElementById("qqq-updated").innerText = formatKSTTime(data.qqqTime);
+      document.getElementById("spx-updated").innerText = formatTime(data.spxTime);
+      document.getElementById("qqq-updated").innerText = formatTime(data.qqqTime);
 
       drawBandChart("spxChart", data.spx.closes, data.spx.sma, 0.025, 0.025);
       renderTokens("spx-info", data.spx.sig);
@@ -705,8 +418,7 @@
       ratingEl.innerText = translateRating(data.fgi.latestRating);
       ratingEl.style.color = fgiColor(data.fgi.latestVal);
 
-      const statsEl = document.getElementById("fgi-stats-text");
-      statsEl.innerHTML = `
+      document.getElementById("fgi-stats-text").innerHTML = `
         <span style="color: ${fgiColor(data.fgi.latestVal)}">현재 ${data.fgi.latestVal.toFixed(0)}</span>
         <span class="fgi-slash"> / </span>
         <span style="color: ${fgiColor(data.fgi.avg30)}">30일 평균 ${data.fgi.avg30.toFixed(0)}</span>
@@ -720,15 +432,15 @@
 
     async function loadDashboard(forceRefresh = false) {
       const cached = localStorage.getItem(CACHE_KEY);
-      let renderedCache = false;
+      let rendered = false;
       if (cached && !forceRefresh) {
         try {
           renderDashboardUI(JSON.parse(cached));
-          renderedCache = true;
+          rendered = true;
         } catch (e) {}
       }
 
-      if (!renderedCache) {
+      if (!rendered) {
         document.getElementById("loader").style.display = "flex";
         document.getElementById("main-view").style.display = "none";
       }
@@ -736,13 +448,11 @@
       try {
         const res = await fetch(WORKER_URL);
         if (!res.ok) throw new Error("Fetch failed");
-        const freshData = await res.json();
-        localStorage.setItem(CACHE_KEY, JSON.stringify(freshData));
-        renderDashboardUI(freshData);
+        const fresh = await res.json();
+        localStorage.setItem(CACHE_KEY, JSON.stringify(fresh));
+        renderDashboardUI(fresh);
       } catch (err) {
-        if (!renderedCache) {
-          document.getElementById("loader").innerText = "오류: " + err.message;
-        }
+        if (!rendered) document.getElementById("loader").innerText = "오류: " + err.message;
       }
     }
 
