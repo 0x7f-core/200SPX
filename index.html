@@ -52,47 +52,128 @@
       user-select: none;
     }
 
-    /* 위젯 모드 전용 반응형 풀-핏 스타일 */
+    /* ─── 위젯 전용 풀-화면 비례 스케일링 ─── */
     body.is-widget {
-      padding: 4px;
-      height: 100vh;
-      min-height: 100vh;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
+      padding: 0 !important;
+      margin: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      min-height: 100vh !important;
+      overflow: hidden !important;
+      display: flex !important;
+      background-color: #000000 !important;
     }
 
     body.is-widget .widget-container {
+      width: 100%;
       height: 100%;
+      display: flex;
+      flex-direction: column;
       gap: 0;
     }
 
     body.is-widget .card {
+      width: 100%;
       height: 100%;
+      border-radius: 0;
+      border: none;
+      padding: 3.5vh 3.5vw 2.5vh 3.5vw;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 8px 12px;
-      border-radius: 14px;
-      box-shadow: none;
+      box-sizing: border-box;
+    }
+
+    body.is-widget .card-header {
+      margin-bottom: 0.5vh;
+    }
+
+    body.is-widget .fgi-header,
+    body.is-widget .title {
+      font-size: min(5vw, 4.5vh) !important;
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 0.5vh;
+    }
+
+    body.is-widget .version {
+      font-size: min(2.8vw, 2.5vh) !important;
+    }
+
+    body.is-widget .updated-time {
+      font-size: min(3vw, 2.8vh) !important;
+      margin-bottom: 1vh;
     }
 
     body.is-widget .content-row {
       flex: 1;
       min-height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2.5vw;
+      width: 100%;
     }
 
     body.is-widget .chart-box {
+      flex: 1;
       height: 100%;
+      min-height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    body.is-widget .chart-box canvas {
-      max-height: 100%;
-      width: auto;
-      max-width: 100%;
-      object-fit: contain;
+    body.is-widget .info-box {
+      flex: 1.15;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0.8vh;
     }
 
+    body.is-widget .sig-row {
+      font-size: min(4.6vw, 4vh) !important;
+      line-height: 1.25;
+    }
+
+    body.is-widget .status-text {
+      font-size: min(3.2vw, 2.8vh) !important;
+      margin-top: 0.4vh;
+    }
+
+    body.is-widget .dd-text {
+      font-size: min(3.5vw, 3vh) !important;
+      margin-top: 0.5vh;
+    }
+
+    body.is-widget .fgi-info-box {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    body.is-widget .fgi-rating {
+      font-size: min(4.6vw, 4vh) !important;
+      font-weight: 700;
+      margin-top: 0.5vh;
+    }
+
+    body.is-widget .fgi-stats {
+      font-size: min(3.6vw, 3.2vh) !important;
+      font-weight: 500;
+      margin-top: 0.6vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.2vw;
+    }
+
+    /* ─── 일반 앱 모드 스타일 ─── */
     .widget-container {
       width: 100%;
       display: flex;
@@ -116,7 +197,7 @@
     }
 
     .title {
-      font-size: clamp(14px, 3.8vw, 17px);
+      font-size: 16px;
       font-weight: 700;
       text-decoration: none;
       color: var(--p1);
@@ -124,13 +205,13 @@
     }
 
     .version {
-      font-size: clamp(8px, 2vw, 10px);
+      font-size: 8px;
       color: var(--p2);
       font-weight: 400;
     }
 
     .updated-time {
-      font-size: clamp(9px, 2.4vw, 11px);
+      font-size: 10px;
       color: var(--p1);
       margin-bottom: 6px;
       font-weight: 400;
@@ -145,7 +226,7 @@
     }
 
     .chart-box {
-      flex: 1.1;
+      flex: 1;
       min-width: 0;
       display: flex;
       align-items: center;
@@ -157,18 +238,15 @@
       min-width: 0;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       gap: 3px;
     }
 
     canvas {
-      width: 100%;
-      height: auto;
       display: block;
     }
 
     .sig-row {
-      font-size: clamp(13px, 3.4vw, 16px);
+      font-size: 14px;
       font-weight: 700;
       line-height: 1.25;
       display: flex;
@@ -184,20 +262,20 @@
     .token-alert  { color: var(--alert); }
 
     .status-text {
-      font-size: clamp(10px, 2.6vw, 12px);
+      font-size: 10px;
       margin-top: 2px;
       font-weight: 400;
     }
 
     .dd-text {
-      font-size: clamp(11px, 2.8vw, 13px);
+      font-size: 11px;
       font-weight: 500;
       color: var(--p1);
       margin-top: 3px;
     }
 
     .fgi-header {
-      font-size: clamp(14px, 3.8vw, 17px);
+      font-size: 16px;
       font-weight: 700;
       margin-bottom: 4px;
       text-decoration: none;
@@ -217,13 +295,13 @@
     }
 
     .fgi-rating {
-      font-size: clamp(13px, 3.4vw, 16px);
+      font-size: 15px;
       font-weight: 700;
       margin-top: 2px;
     }
 
     .fgi-stats {
-      font-size: clamp(11px, 2.8vw, 14px);
+      font-size: 13px;
       font-weight: 500;
       margin-top: 3px;
       display: flex;
@@ -340,17 +418,25 @@
       extremeGreed: "#b07cc0"
     };
 
-    function getHDContext(canvasId, logicalW, logicalH) {
+    function getDynamicHDContext(canvasId, fallbackW, fallbackH) {
       const cvs = document.getElementById(canvasId);
       if (!cvs) return null;
-      const dpr = window.devicePixelRatio || 1;
-      cvs.width = logicalW * dpr;
-      cvs.height = logicalH * dpr;
-      cvs.style.aspectRatio = `${logicalW} / ${logicalH}`;
+      const parent = cvs.parentElement;
+      const rect = parent ? parent.getBoundingClientRect() : null;
+      
+      const W = (rect && rect.width > 20) ? rect.width : fallbackW;
+      const H = (rect && rect.height > 20) ? rect.height : fallbackH;
+      const dpr = window.devicePixelRatio || 2;
+
+      cvs.width = W * dpr;
+      cvs.height = H * dpr;
+      cvs.style.width = "100%";
+      cvs.style.height = "100%";
+
       const ctx = cvs.getContext("2d");
       ctx.resetTransform?.();
       ctx.scale(dpr, dpr);
-      return { ctx, W: logicalW, H: logicalH };
+      return { ctx, W, H };
     }
 
     function etfColorClass(token) {
@@ -380,9 +466,9 @@
     }
 
     function drawBandChart(canvasId, closes, sma, upB, dnB) {
-      const cv = getHDContext(canvasId, 500, 300);
+      const cv = getDynamicHDContext(canvasId, 500, 300);
       if (!cv) return;
-      const { ctx } = cv;
+      const { ctx, W, H } = cv;
 
       const SIZE = 90;
       const pSet = closes.slice(-SIZE);
@@ -395,9 +481,14 @@
       const max = Math.max(...all);
       const range = (max - min) === 0 ? 1 : (max - min);
 
+      const PAD_X = W * 0.03;
+      const PAD_Y = H * 0.06;
+      const plotW = W - PAD_X * 2;
+      const plotH = H - PAD_Y * 2;
+
       const trans = (v, i) => ({
-        x: 15 + (i / (SIZE - 1)) * 470,
-        y: 285 - ((v - min) / range) * 270,
+        x: PAD_X + (i / (SIZE - 1)) * plotW,
+        y: (H - PAD_Y) - ((v - min) / range) * plotH,
       });
 
       const plot = (dat, col, wid) => {
@@ -414,17 +505,18 @@
         ctx.stroke();
       };
 
-      plot(uSet.map(trans), C.upperBand, 3);
-      plot(lSet.map(trans), C.lowerBand, 3);
-      plot(pSet.map(trans), C.cp, 5);
+      const lineScale = Math.max(W / 300, 1);
+      plot(uSet.map(trans), C.upperBand, 2.5 * lineScale);
+      plot(lSet.map(trans), C.lowerBand, 2.5 * lineScale);
+      plot(pSet.map(trans), C.cp, 4 * lineScale);
     }
 
     function drawFGIChart(canvasId, data) {
-      const cv = getHDContext(canvasId, 480, 300);
+      const cv = getDynamicHDContext(canvasId, 480, 300);
       if (!cv) return;
       const { ctx, W, H } = cv;
 
-      const PAD_L = 8, PAD_R = 8, PAD_T = 12, PAD_B = 12;
+      const PAD_L = W * 0.03, PAD_R = W * 0.03, PAD_T = H * 0.08, PAD_B = H * 0.08;
       const usableW = W - PAD_L - PAD_R;
       const usableH = H - PAD_T - PAD_B;
       const toY = (val) => PAD_T + (1 - val / 100) * usableH;
@@ -434,8 +526,8 @@
         ctx.beginPath();
         ctx.moveTo(PAD_L, toY(level));
         ctx.lineTo(W - PAD_R, toY(level));
-        ctx.strokeStyle = "rgba(170, 170, 170, 0.2)";
-        ctx.lineWidth = 1;
+        ctx.strokeStyle = "rgba(170, 170, 170, 0.25)";
+        ctx.lineWidth = Math.max(W / 400, 1);
         ctx.stroke();
       });
 
@@ -446,24 +538,42 @@
         else ctx.lineTo(x, y);
       });
       ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
-      ctx.lineWidth = 2;
+      ctx.lineWidth = Math.max(W / 220, 2);
       ctx.stroke();
 
+      const dotR = Math.max(W / 100, 3.5);
       data.forEach((d, i) => {
         const x = toX(i), y = toY(parseFloat(d.y));
         ctx.fillStyle = fgiColor(parseFloat(d.y));
         ctx.beginPath();
-        ctx.arc(x, y, 4, 0, Math.PI * 2);
+        ctx.arc(x, y, dotR, 0, Math.PI * 2);
         ctx.fill();
       });
     }
 
     function drawGauge(canvasId, val) {
-      const cv = getHDContext(canvasId, 320, 180);
-      if (!cv) return;
-      const { ctx, W, H } = cv;
+      const cvs = document.getElementById(canvasId);
+      if (!cvs) return;
+      const parent = cvs.parentElement;
+      const rect = parent ? parent.getBoundingClientRect() : null;
 
-      const cx = W / 2, cy = H - 20, radius = 120, arcThick = 10;
+      const W = (rect && rect.width > 20) ? rect.width : 320;
+      const H = (rect && rect.height > 20) ? rect.height * 0.55 : 170;
+      const dpr = window.devicePixelRatio || 2;
+
+      cvs.width = W * dpr;
+      cvs.height = H * dpr;
+      cvs.style.width = `${W}px`;
+      cvs.style.height = `${H}px`;
+
+      const ctx = cvs.getContext("2d");
+      ctx.resetTransform?.();
+      ctx.scale(dpr, dpr);
+
+      const cx = W / 2;
+      const cy = H - Math.max(H * 0.08, 6);
+      const radius = Math.min(cx * 0.82, cy * 0.88);
+      const arcThick = Math.max(radius * 0.1, 7);
 
       for (let i = 0; i < 120; i++) {
         const t = i / 119;
@@ -477,12 +587,12 @@
       }
 
       const needleAngle = Math.PI + (val / 100) * Math.PI;
-      const needleLen = radius - 8;
+      const needleLen = radius - arcThick * 0.6;
       for (let i = 0; i < 35; i++) {
         const t = i / 34;
         const nx = cx + Math.cos(needleAngle) * needleLen * t;
         const ny = cy + Math.sin(needleAngle) * needleLen * t;
-        const thick = 12 * (1 - t);
+        const thick = (arcThick * 1.1) * (1 - t);
         ctx.fillStyle = C.p1;
         ctx.beginPath();
         ctx.arc(nx, ny, thick / 2, 0, Math.PI * 2);
@@ -491,14 +601,15 @@
 
       ctx.fillStyle = C.p1;
       ctx.beginPath();
-      ctx.arc(cx, cy, 8, 0, Math.PI * 2);
+      ctx.arc(cx, cy, arcThick * 0.75, 0, Math.PI * 2);
       ctx.fill();
 
-      const labelDist = radius + 22;
+      const labelDist = radius + arcThick * 1.8;
       const lx = cx + Math.cos(needleAngle) * labelDist;
       const ly = cy + Math.sin(needleAngle) * labelDist;
+      const fontSize = Math.max(radius * 0.24, 16);
       ctx.fillStyle = C.p1;
-      ctx.font = "bold 22px -apple-system, sans-serif";
+      ctx.font = `bold ${fontSize}px -apple-system, sans-serif`;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText(val.toFixed(0), lx, ly);
@@ -586,6 +697,8 @@
           return `${yy}.${mm}.${dd}. ${hh}:${min} 기준`;
         };
 
+        applyViewFilter();
+
         if (data.version) {
           document.getElementById("spx-ver").innerText = data.version;
           document.getElementById("qqq-ver").innerText = data.version;
@@ -594,30 +707,32 @@
         document.getElementById("spx-updated").innerText = formatKSTTime(data.spxTime);
         document.getElementById("qqq-updated").innerText = formatKSTTime(data.qqqTime);
 
-        drawBandChart("spxChart", data.spx.closes, data.spx.sma, data.spx.upB, data.spx.dnB);
-        renderTokens("spx-info", data.spx.sig);
-
-        drawBandChart("qqqChart", data.qqq.closes, data.qqq.sma, data.qqq.upB, data.qqq.dnB);
-        renderTokens("qqq-info", data.qqq.sig);
-
-        drawFGIChart("fgiHistoryChart", data.fgi.data);
-        drawGauge("fgiGauge", data.fgi.latestVal);
-
-        const ratingEl = document.getElementById("fgi-rating-text");
-        ratingEl.innerText = translateRating(data.fgi.latestRating);
-        ratingEl.style.color = fgiColor(data.fgi.latestVal);
-
-        const statsEl = document.getElementById("fgi-stats-text");
-        statsEl.innerHTML = `
-          <span style="color: ${fgiColor(data.fgi.latestVal)}">현재 ${data.fgi.latestVal.toFixed(0)}</span>
-          <span class="fgi-slash">/</span>
-          <span style="color: ${fgiColor(data.fgi.avg30)}">30일 평균 ${data.fgi.avg30.toFixed(0)}</span>
-        `;
-
-        applyViewFilter();
-
         loader.style.display = "none";
         mainView.style.display = "flex";
+
+        // DOM 렌더링 완료 후 부모 박스 크기 측정하여 동적 캔버스 그리기
+        setTimeout(() => {
+          drawBandChart("spxChart", data.spx.closes, data.spx.sma, data.spx.upB, data.spx.dnB);
+          renderTokens("spx-info", data.spx.sig);
+
+          drawBandChart("qqqChart", data.qqq.closes, data.qqq.sma, data.qqq.upB, data.qqq.dnB);
+          renderTokens("qqq-info", data.qqq.sig);
+
+          drawFGIChart("fgiHistoryChart", data.fgi.data);
+          drawGauge("fgiGauge", data.fgi.latestVal);
+
+          const ratingEl = document.getElementById("fgi-rating-text");
+          ratingEl.innerText = translateRating(data.fgi.latestRating);
+          ratingEl.style.color = fgiColor(data.fgi.latestVal);
+
+          const statsEl = document.getElementById("fgi-stats-text");
+          statsEl.innerHTML = `
+            <span style="color: ${fgiColor(data.fgi.latestVal)}">현재 ${data.fgi.latestVal.toFixed(0)}</span>
+            <span class="fgi-slash">/</span>
+            <span style="color: ${fgiColor(data.fgi.avg30)}">30일 평균 ${data.fgi.avg30.toFixed(0)}</span>
+          `;
+        }, 30);
+
       } catch (err) {
         loader.innerText = "오류: " + err.message;
       }
