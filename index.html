@@ -20,7 +20,7 @@
       --status-p: #9a9aa0;
       --dot: #666666;
       --slash: #FFFFFF;
-      --divider: #333333;
+      --divider: #222224;
 
       --tqqq: #e8714f;
       --spym: #b07cc0;
@@ -53,8 +53,8 @@
 
     body {
       color: var(--p1);
-      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "SF Pro Display", "SF Pro Text", "Pretendard", "Roboto", "Helvetica Neue", sans-serif;
-      padding: calc(14px + env(safe-area-inset-top)) 14px calc(18px + env(safe-area-inset-bottom)) 14px;
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "SF Pro Display", "SF Pro Text", "Pretendard", "Roboto", sans-serif;
+      padding: calc(14px + env(safe-area-inset-top)) 16px calc(20px + env(safe-area-inset-bottom)) 16px;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       text-rendering: optimizeLegibility;
@@ -63,22 +63,49 @@
       justify-content: center;
     }
 
-    /* 웹/앱 메인 대시보드 컨테이너 */
+    /* =============================================================================
+       웹/앱 대시보드 반응형 그리드 (모바일 1열 / 태블릿·가로 2열 / 대화면 3열)
+       ============================================================================= */
     .widget-container {
       width: 100%;
-      max-width: 480px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
+      max-width: 1360px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
       margin: 0 auto;
+    }
+
+    /* 태블릿 / 가로 화면: 2열 배치 */
+    @media (min-width: 768px) {
+      .widget-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+        padding: 8px 12px;
+      }
+      #card-fgi {
+        grid-column: span 2;
+      }
+      .btn-wrap {
+        grid-column: span 2;
+      }
+    }
+
+    /* 대형 태블릿 / PC 화면: 균형 잡힌 2열 와이드 대시보드 */
+    @media (min-width: 1200px) {
+      .widget-container {
+        gap: 22px;
+      }
     }
 
     .card {
       width: 100%;
       background: var(--card-bg);
       border-radius: 20px;
-      padding: 14px 16px;
+      padding: 16px 20px;
       border: 1px solid var(--card-border);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
     .card-header {
@@ -89,7 +116,7 @@
     }
 
     .title {
-      font-size: 16px;
+      font-size: 16.5px;
       font-weight: 700;
       text-decoration: none;
       color: var(--p1);
@@ -103,9 +130,9 @@
     }
 
     .updated-time {
-      font-size: 10.5px;
+      font-size: 11px;
       color: var(--p1);
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       font-weight: 400;
       letter-spacing: -0.2px;
     }
@@ -114,12 +141,13 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 16px;
       width: 100%;
+      flex: 1;
     }
 
     .chart-box {
-      flex: 1.15;
+      flex: 1.35;
       min-width: 0;
       display: flex;
       align-items: center;
@@ -132,8 +160,8 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      gap: 3px;
-      padding-left: 4px;
+      gap: 4px;
+      padding-left: 6px;
     }
 
     canvas {
@@ -145,13 +173,13 @@
     }
 
     .sig-row {
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 700;
       line-height: 1.25;
       display: flex;
       align-items: center;
       flex-wrap: wrap;
-      letter-spacing: -0.2px;
+      letter-spacing: -0.3px;
     }
 
     .token-tqqq { color: var(--tqqq); }
@@ -162,7 +190,7 @@
     .token-alert  { color: var(--alert); }
 
     .status-text {
-      font-size: 10.5px;
+      font-size: 11.5px;
       color: var(--status-p);
       margin-top: 3px;
       font-weight: 400;
@@ -170,7 +198,7 @@
     }
 
     .dd-text {
-      font-size: 11.5px;
+      font-size: 12.5px;
       font-weight: 700;
       color: var(--p1);
       margin-top: 4px;
@@ -178,9 +206,9 @@
     }
 
     .fgi-header {
-      font-size: 16px;
+      font-size: 16.5px;
       font-weight: 700;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       text-decoration: none;
       color: var(--p1);
       display: inline-block;
@@ -195,24 +223,24 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      gap: 3px;
+      gap: 4px;
     }
 
     .fgi-rating {
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 700;
       margin-top: 2px;
       letter-spacing: -0.2px;
     }
 
     .fgi-stats {
-      font-size: 13px;
-      font-weight: 500;
+      font-size: 13.5px;
+      font-weight: 600;
       margin-top: 2px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 4px;
+      gap: 6px;
       letter-spacing: -0.2px;
     }
 
@@ -231,16 +259,19 @@
       font-weight: 500;
     }
 
+    .btn-wrap {
+      width: 100%;
+    }
+
     .refresh-btn {
       width: 100%;
       background: #141416;
       border: 1px solid var(--divider);
       color: var(--p2);
-      padding: 13px;
+      padding: 14px;
       border-radius: 16px;
-      font-size: 13.5px;
+      font-size: 14px;
       font-weight: 600;
-      margin-top: 4px;
       cursor: pointer;
       transition: background 0.15s ease, color 0.15s ease;
       letter-spacing: -0.2px;
@@ -251,7 +282,7 @@
     }
 
     /* =============================================================================
-       안드로이드 홈 화면 위젯 전용 뷰포트 스타일 (?v=spx, ?v=qqq, ?v=fgi)
+       안드로이드 홈 화면 위젯 전용 뷰포트 (?v=spx, ?v=qqq, ?v=fgi)
        ============================================================================= */
     body.is-widget {
       width: 100vw;
@@ -275,6 +306,7 @@
       display: flex;
       flex-direction: column;
       gap: 0;
+      padding: 0;
     }
 
     body.is-widget .card {
@@ -463,13 +495,15 @@
       </div>
     </div>
 
-    <button class="refresh-btn" id="btn-refresh" onclick="loadDashboard()">새로고침</button>
+    <div class="btn-wrap">
+      <button class="refresh-btn" id="btn-refresh" onclick="loadDashboard()">새로고침</button>
+    </div>
   </div>
 
   <script>
     const WORKER_URL = "https://spx-indicator-api.jinwook0904.workers.dev";
 
-    // iOS Scriptable C 팔레트와 1:1 일치
+    // iOS Scriptable C 팔레트 1:1 일치
     const C = {
       bg: "#000000",
       p1: "#FFFFFF",
@@ -477,7 +511,7 @@
       statusP: "#9a9aa0",
       dot: "#666666",
       slash: "#FFFFFF",
-      divider: "#333333",
+      divider: "#222224",
 
       tqqq: "#e8714f",
       spym: "#b07cc0",
@@ -495,7 +529,7 @@
       extremeGreed: "#b07cc0"
     };
 
-    // 3배 슈퍼샘플링 초고화질 캔버스 컨텍스트
+    // 3배 슈퍼샘플링 캔버스 컨텍스트
     function getHDContext(canvasId, logicalW, logicalH) {
       const cvs = document.getElementById(canvasId);
       if (!cvs) return null;
@@ -720,15 +754,15 @@
       if (view === 'spx') {
         cardQqq.style.display = 'none';
         cardFgi.style.display = 'none';
-        btnRefresh.style.display = 'none';
+        if (btnRefresh) btnRefresh.style.display = 'none';
       } else if (view === 'qqq') {
         cardSpx.style.display = 'none';
         cardFgi.style.display = 'none';
-        btnRefresh.style.display = 'none';
+        if (btnRefresh) btnRefresh.style.display = 'none';
       } else if (view === 'fgi') {
         cardSpx.style.display = 'none';
         cardQqq.style.display = 'none';
-        btnRefresh.style.display = 'none';
+        if (btnRefresh) btnRefresh.style.display = 'none';
       }
     }
 
@@ -788,7 +822,7 @@
         applyViewFilter();
 
         loader.style.display = "none";
-        mainView.style.display = "flex";
+        mainView.style.display = "grid";
       } catch (err) {
         loader.innerText = "오류: " + err.message;
       }
