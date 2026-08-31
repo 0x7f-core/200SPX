@@ -27,7 +27,7 @@ jobs:
           cp index.html www/
           npm init -y
           npm install @capacitor/core @capacitor/cli @capacitor/android
-          npx cap init "200SPX" "com.jinwook.spx200" --web-dir="www"
+          npx cap init "200SPX" "com.jinwook0904.github.io/200SPX" --web-dir="www"
 
           node -e '
           const fs = require("fs");
@@ -75,7 +75,7 @@ jobs:
             done
           fi
 
-      - name: Inject Responsive Android Widgets
+      - name: Inject Ultra-Fast Instant Android Widgets
         run: |
           mkdir -p android/app/src/main/res/drawable
           cat << 'EOF' > android/app/src/main/res/drawable/ic_refresh.xml
@@ -176,6 +176,7 @@ jobs:
           import android.os.Looper;
           import android.util.DisplayMetrics;
           import android.view.View;
+          import android.webkit.JavascriptInterface;
           import android.webkit.WebSettings;
           import android.webkit.WebView;
           import android.webkit.WebViewClient;
@@ -226,14 +227,14 @@ jobs:
                           int heightPx = Math.max((int) (heightDp * scale), 360);
 
                           WebView webView = new WebView(context.getApplicationContext());
-                          // 1. 웹뷰 기본 배경을 블랙으로 강제 (흰색 화면 깜빡임/캡처 방지)
                           webView.setBackgroundColor(0xFF000000);
                           webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
                           WebSettings settings = webView.getSettings();
                           settings.setJavaScriptEnabled(true);
                           settings.setDomStorageEnabled(true);
-                          settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+                          settings.setDatabaseEnabled(true);
+                          settings.setCacheMode(WebSettings.LOAD_DEFAULT);
 
                           webView.measure(
                               View.MeasureSpec.makeMeasureSpec(widthPx, View.MeasureSpec.EXACTLY),
@@ -241,38 +242,45 @@ jobs:
                           );
                           webView.layout(0, 0, widthPx, heightPx);
 
-                          webView.setWebViewClient(new WebViewClient() {
-                              @Override
-                              public void onPageFinished(WebView view, String url) {
-                                  new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                                      try {
-                                          Bitmap bitmap = Bitmap.createBitmap(widthPx, heightPx, Bitmap.Config.ARGB_8888);
-                                          Canvas canvas = new Canvas(bitmap);
-                                          canvas.drawColor(0xFF000000);
-                                          view.draw(canvas);
+                          // 초고속 즉시 캡처 실행 함수
+                          Runnable doCapture = () -> {
+                              try {
+                                  Bitmap bitmap = Bitmap.createBitmap(widthPx, heightPx, Bitmap.Config.ARGB_8888);
+                                  Canvas canvas = new Canvas(bitmap);
+                                  canvas.drawColor(0xFF000000);
+                                  webView.draw(canvas);
 
-                                          RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.spx_widget_layout);
-                                          views.setImageViewBitmap(R.id.widget_image, bitmap);
+                                  RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.spx_widget_layout);
+                                  views.setImageViewBitmap(R.id.widget_image, bitmap);
 
-                                          Intent appIntent = new Intent(context, MainActivity.class);
-                                          PendingIntent appPendingIntent = PendingIntent.getActivity(
-                                              context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-                                          );
-                                          views.setOnClickPendingIntent(R.id.widget_image, appPendingIntent);
+                                  Intent appIntent = new Intent(context, MainActivity.class);
+                                  PendingIntent appPendingIntent = PendingIntent.getActivity(
+                                      context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+                                  );
+                                  views.setOnClickPendingIntent(R.id.widget_image, appPendingIntent);
 
-                                          Intent refreshIntent = new Intent(context, BaseWidgetProvider.this.getClass());
-                                          refreshIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-                                          refreshIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[]{appWidgetId});
-                                          PendingIntent refreshPendingIntent = PendingIntent.getBroadcast(
-                                              context, appWidgetId, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-                                          );
-                                          views.setOnClickPendingIntent(R.id.btn_refresh, refreshPendingIntent);
+                                  Intent refreshIntent = new Intent(context, BaseWidgetProvider.this.getClass());
+                                  refreshIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+                                  refreshIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[]{appWidgetId});
+                                  PendingIntent refreshPendingIntent = PendingIntent.getBroadcast(
+                                      context, appWidgetId, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+                                  );
+                                  views.setOnClickPendingIntent(R.id.btn_refresh, refreshPendingIntent);
 
-                                          appWidgetManager.updateAppWidget(appWidgetId, views);
-                                      } catch (Exception ignored) {}
-                                  }, 1400);
+                                  appWidgetManager.updateAppWidget(appWidgetId, views);
+                              } catch (Exception ignored) {}
+                          };
+
+                          // 웹뷰 JS에서 그리기 완료 신호를 즉시 수신하는 브릿지 인터페이스
+                          webView.addJavascriptInterface(new Object() {
+                              @JavascriptInterface
+                              public void onRenderComplete() {
+                                  new Handler(Looper.getMainLooper()).postDelayed(doCapture, 40);
                               }
-                          });
+                          }, "AndroidBridge");
+
+                          // 네트워크 지연 시 안전 타임아웃 백업 (최대 2.2초)
+                          new Handler(Looper.getMainLooper()).postDelayed(doCapture, 2200);
 
                           webView.loadUrl(getUrl());
                       } catch (Exception ignored) {}
@@ -350,5 +358,5 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: 200SPX-Fixed-APK
+          name: 200SPX-Fast-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
