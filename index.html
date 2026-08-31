@@ -239,7 +239,7 @@
     html:not(.is-widget) .refresh-btn:active { background: #222226; color: var(--p1); }
 
     /* =============================================================================
-       2. 안드로이드 홈 화면 위젯 모드 (html.is-widget)
+       2. 안드로이드 홈 화면 위젯 전용 모드 (html.is-widget)
        ============================================================================= */
     html.is-widget body {
       padding: 2.0vh 2.6vw;
@@ -269,18 +269,18 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 2.6vh 3.0vw 2.2vh 3.0vw;
+      padding: 2.4vh 3.0vw 2.2vh 3.0vw;
       border-radius: 20px;
       border: 1px solid #1c1c1e;
       background: var(--card-bg);
     }
 
-    /* 좌측 상단 헤더 영역 여백 조정 */
+    /* 상단 제목 헤더 행 */
     html.is-widget .card-header {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      margin-bottom: 0.6vh;
+      margin-bottom: 0;
       width: 100%;
     }
 
@@ -300,12 +300,12 @@
       white-space: nowrap;
     }
 
-    /* 제목과 날짜 사이 쾌적한 분리 간격 부여 */
+    /* 위젯 전용: 제목과 날짜 사이를 시원하게 띄우는 여백 설정 */
     html.is-widget .updated-time {
-      font-size: min(2.9vw, 6.2vh);
+      font-size: min(2.85vw, 6.0vh);
       font-weight: 400;
-      margin-top: 0.2vh;
-      margin-bottom: 1.2vh;
+      margin-top: 0.8vh !important;
+      margin-bottom: 1.4vh !important;
       color: #FFFFFF;
       white-space: nowrap;
       line-height: 1.15;
@@ -370,11 +370,7 @@
       letter-spacing: -0.3px;
     }
 
-    html.is-widget .token-action {
-      margin-left: 1.0vw;
-      color: #FFFFFF;
-      font-weight: 600;
-    }
+    html.is-widget .token-action { margin-left: 1.0vw; }
 
     html.is-widget .status-text {
       font-size: min(2.95vw, 6.2vh);
@@ -388,7 +384,6 @@
     html.is-widget .dd-text {
       font-size: min(3.4vw, 7.4vh);
       font-weight: 600;
-      color: #FFFFFF;
       margin-top: 0.5vh;
       white-space: nowrap;
       letter-spacing: -0.3px;
