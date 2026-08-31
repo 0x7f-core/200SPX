@@ -115,7 +115,7 @@
     }
 
     .chart-box {
-      flex: 1;
+      flex: 1.35;
       min-width: 0;
       display: flex;
       align-items: center;
@@ -123,7 +123,7 @@
     }
 
     .info-box {
-      flex: 1.1;
+      flex: 1;
       min-width: 0;
       display: flex;
       flex-direction: column;
@@ -238,7 +238,7 @@
     .refresh-btn:active { background: #222; }
 
     /* =============================================================================
-       안드로이드 위젯 전용 대형 볼드 가독성 최적화 스타일
+       위젯 전용 무절단 100% 반응형 (4x2 / 5x2 완벽 대응)
        ============================================================================= */
     body.is-widget {
       width: 100vw;
@@ -246,7 +246,7 @@
       max-width: 100vw;
       max-height: 100vh;
       margin: 0;
-      padding: 2.5vh 3vw;
+      padding: 1.5vh 1.8vw;
       overflow: hidden;
       display: flex;
       flex-direction: column;
@@ -269,7 +269,7 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 3.5vh 3.5vw 2.5vh 3.5vw;
+      padding: 2.5vh 2.8vw 1.8vh 2.8vw;
       border-radius: 20px;
       border: 1px solid #1c1c1e;
       background: #000000;
@@ -285,7 +285,7 @@
 
     body.is-widget .title,
     body.is-widget .fgi-header {
-      font-size: min(4.8vw, 9.8vh) !important;
+      font-size: min(4.6vw, 9.8vh) !important;
       font-weight: 700;
       letter-spacing: -0.4px;
       color: #FFFFFF;
@@ -293,14 +293,14 @@
     }
 
     body.is-widget .version {
-      font-size: min(2.8vw, 5.8vh) !important;
+      font-size: min(2.7vw, 5.8vh) !important;
       color: #7c7c80;
       line-height: 1;
     }
 
     body.is-widget .updated-time {
-      font-size: min(3.2vw, 6.6vh) !important;
-      margin-bottom: 1.2vh;
+      font-size: min(3.0vw, 6.6vh) !important;
+      margin-bottom: 0.8vh;
       color: #FFFFFF;
       line-height: 1.1;
     }
@@ -310,13 +310,13 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 3vw;
+      gap: 2.5vw;
       min-height: 0;
       width: 100%;
     }
 
     body.is-widget .chart-box {
-      flex: 1;
+      flex: 1.35;
       height: 100%;
       display: flex;
       align-items: center;
@@ -332,17 +332,17 @@
     }
 
     body.is-widget .info-box {
-      flex: 1.05;
+      flex: 1;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      gap: 0.8vh;
+      gap: 0.6vh;
       min-width: 0;
       padding-left: 0.5vw;
     }
 
     body.is-widget .sig-row {
-      font-size: min(5.0vw, 10.2vh) !important;
+      font-size: min(4.8vw, 10.2vh) !important;
       font-weight: 700;
       line-height: 1.2;
       white-space: nowrap;
@@ -356,7 +356,7 @@
     }
 
     body.is-widget .status-text {
-      font-size: min(3.3vw, 6.8vh) !important;
+      font-size: min(3.2vw, 6.8vh) !important;
       color: #9a9aa0;
       margin-top: 0.4vh;
       white-space: nowrap;
@@ -364,7 +364,7 @@
     }
 
     body.is-widget .dd-text {
-      font-size: min(3.8vw, 8.0vh) !important;
+      font-size: min(3.6vw, 8.0vh) !important;
       font-weight: 700;
       color: #FFFFFF;
       margin-top: 0.5vh;
@@ -373,24 +373,24 @@
     }
 
     body.is-widget .fgi-info-box {
-      flex: 1.05;
+      flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 0.8vh;
+      gap: 0.6vh;
       min-width: 0;
     }
 
     body.is-widget .fgi-rating {
-      font-size: min(4.8vw, 9.8vh) !important;
+      font-size: min(4.6vw, 9.8vh) !important;
       font-weight: 700;
       margin-top: 0.4vh;
       white-space: nowrap;
     }
 
     body.is-widget .fgi-stats {
-      font-size: min(3.8vw, 7.8vh) !important;
+      font-size: min(3.6vw, 7.8vh) !important;
       gap: 1.5vw;
       white-space: nowrap;
       font-weight: 600;
@@ -479,7 +479,6 @@
       extremeGreed: "#b07cc0"
     };
 
-    // 3배 슈퍼샘플링 초고화질 캔버스 컨텍스트
     function getHDContext(canvasId, logicalW, logicalH) {
       const cvs = document.getElementById(canvasId);
       if (!cvs) return null;
@@ -521,9 +520,9 @@
       }
     }
 
-    // 꽉 찬 다이내믹 밴드 차트 (480 x 260)
+    // 5x2 및 4x2 모두 최적화된 와이드 밴드 차트 (560 x 260)
     function drawBandChart(canvasId, closes, sma, upB, dnB) {
-      const W = 480, H = 260;
+      const W = 560, H = 260;
       const cv = getHDContext(canvasId, W, H);
       if (!cv) return;
       const { ctx } = cv;
@@ -565,9 +564,9 @@
       plot(pSet.map(trans), C.cp, 6.0);
     }
 
-    // 꽉 찬 FGI 히스토리 차트 (480 x 260)
+    // FGI 히스토리 차트 (560 x 260)
     function drawFGIChart(canvasId, data) {
-      const W = 480, H = 260;
+      const W = 560, H = 260;
       const cv = getHDContext(canvasId, W, H);
       if (!cv) return;
       const { ctx, W: cW, H: cH } = cv;
