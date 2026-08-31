@@ -16,7 +16,7 @@
       --card-bg: #000000;
       --card-border: #1c1c1e;
       --p1: #FFFFFF;
-      --p2: #AAAAAA;
+      --p2: #888888;
       --status-p: #9a9aa0;
       --dot: #666666;
       --slash: #FFFFFF;
@@ -47,34 +47,37 @@
 
     html, body {
       width: 100%;
-      height: 100%;
+      min-height: 100%;
       background-color: var(--bg);
     }
 
     body {
       color: var(--p1);
-      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "SF Pro Display", "SF Pro Text", "Pretendard", "Roboto", sans-serif;
-      padding: calc(10px + env(safe-area-inset-top)) 12px calc(10px + env(safe-area-inset-bottom)) 12px;
-      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "SF Pro Display", "SF Pro Text", "Pretendard", "Roboto", "Helvetica Neue", sans-serif;
+      padding: calc(14px + env(safe-area-inset-top)) 14px calc(18px + env(safe-area-inset-bottom)) 14px;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       text-rendering: optimizeLegibility;
       user-select: none;
+      display: flex;
+      justify-content: center;
     }
 
-    /* 전체 앱 대시보드 모드 */
+    /* 웹/앱 메인 대시보드 컨테이너 */
     .widget-container {
       width: 100%;
+      max-width: 480px;
       display: flex;
       flex-direction: column;
       gap: 14px;
+      margin: 0 auto;
     }
 
     .card {
       width: 100%;
       background: var(--card-bg);
       border-radius: 20px;
-      padding: 12px 14px;
+      padding: 14px 16px;
       border: 1px solid var(--card-border);
     }
 
@@ -90,7 +93,7 @@
       font-weight: 700;
       text-decoration: none;
       color: var(--p1);
-      letter-spacing: -0.3px;
+      letter-spacing: -0.4px;
     }
 
     .version {
@@ -102,8 +105,9 @@
     .updated-time {
       font-size: 10.5px;
       color: var(--p1);
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       font-weight: 400;
+      letter-spacing: -0.2px;
     }
 
     .content-row {
@@ -115,7 +119,7 @@
     }
 
     .chart-box {
-      flex: 1.1;
+      flex: 1.15;
       min-width: 0;
       display: flex;
       align-items: center;
@@ -123,12 +127,13 @@
     }
 
     .info-box {
-      flex: 1.15;
+      flex: 1;
       min-width: 0;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      gap: 2px;
+      gap: 3px;
+      padding-left: 4px;
     }
 
     canvas {
@@ -146,6 +151,7 @@
       display: flex;
       align-items: center;
       flex-wrap: wrap;
+      letter-spacing: -0.2px;
     }
 
     .token-tqqq { color: var(--tqqq); }
@@ -160,6 +166,7 @@
       color: var(--status-p);
       margin-top: 3px;
       font-weight: 400;
+      letter-spacing: -0.2px;
     }
 
     .dd-text {
@@ -167,33 +174,35 @@
       font-weight: 700;
       color: var(--p1);
       margin-top: 4px;
+      letter-spacing: -0.2px;
     }
 
     .fgi-header {
       font-size: 16px;
       font-weight: 700;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
       text-decoration: none;
       color: var(--p1);
       display: inline-block;
-      letter-spacing: -0.3px;
+      letter-spacing: -0.4px;
     }
 
     .fgi-info-box {
-      flex: 1.15;
+      flex: 1;
       min-width: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
-      gap: 2px;
+      gap: 3px;
     }
 
     .fgi-rating {
       font-size: 15px;
       font-weight: 700;
       margin-top: 2px;
+      letter-spacing: -0.2px;
     }
 
     .fgi-stats {
@@ -204,6 +213,7 @@
       align-items: center;
       justify-content: center;
       gap: 4px;
+      letter-spacing: -0.2px;
     }
 
     .fgi-slash {
@@ -215,9 +225,10 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 60vh;
+      height: 70vh;
       color: var(--p2);
       font-size: 13px;
+      font-weight: 500;
     }
 
     .refresh-btn {
@@ -225,17 +236,22 @@
       background: #141416;
       border: 1px solid var(--divider);
       color: var(--p2);
-      padding: 12px;
-      border-radius: 14px;
-      font-size: 13px;
+      padding: 13px;
+      border-radius: 16px;
+      font-size: 13.5px;
       font-weight: 600;
-      margin-top: 6px;
+      margin-top: 4px;
       cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease;
+      letter-spacing: -0.2px;
     }
-    .refresh-btn:active { background: #222; }
+    .refresh-btn:active {
+      background: #222226;
+      color: var(--p1);
+    }
 
     /* =============================================================================
-       안드로이드 홈 화면 위젯 전용 완벽 반응형 스타일 (4x2 / 5x2 대응)
+       안드로이드 홈 화면 위젯 전용 뷰포트 스타일 (?v=spx, ?v=qqq, ?v=fgi)
        ============================================================================= */
     body.is-widget {
       width: 100vw;
@@ -255,6 +271,7 @@
     body.is-widget .widget-container {
       width: 100%;
       height: 100%;
+      max-width: 100%;
       display: flex;
       flex-direction: column;
       gap: 0;
@@ -399,7 +416,7 @@
   <div id="loader" class="loading-wrap">동기화된 지표를 불러오는 중...</div>
 
   <div id="main-view" class="widget-container" style="display: none;">
-    <!-- Large 위젯: 200슨피단 (SPX) -->
+    <!-- Large: 200슨피단 (SPX ±2.5% 밴드 + V2 다회성 TS) -->
     <div class="card" id="card-spx">
       <div class="card-header">
         <a class="title" href="https://www.youtube.com/@%EC%95%84%EA%B8%B0%ED%8B%B0%ED%81%90" target="_blank">아기티큐 200슨피단 (SPX)</a>
@@ -415,7 +432,7 @@
       </div>
     </div>
 
-    <!-- Medium 위젯: 200큐큐단 (QQQ) -->
+    <!-- Medium: 200큐큐단 (QQQ ±2.0% 밴드 + 1회성 TS) -->
     <div class="card" id="card-qqq">
       <div class="card-header">
         <a class="title" href="https://www.youtube.com/@%EC%95%84%EA%B8%B0%ED%8B%B0%ED%81%90" target="_blank">아기티큐 200큐큐단 (QQQ)</a>
@@ -452,7 +469,7 @@
   <script>
     const WORKER_URL = "https://spx-indicator-api.jinwook0904.workers.dev";
 
-    // Scriptable C 팔레트 1:1 완벽 일치
+    // iOS Scriptable C 팔레트와 1:1 일치
     const C = {
       bg: "#000000",
       p1: "#FFFFFF",
@@ -478,11 +495,11 @@
       extremeGreed: "#b07cc0"
     };
 
-    // 3배 슈퍼샘플링 캔버스 컨텍스트
+    // 3배 슈퍼샘플링 초고화질 캔버스 컨텍스트
     function getHDContext(canvasId, logicalW, logicalH) {
       const cvs = document.getElementById(canvasId);
       if (!cvs) return null;
-      const dpr = 3;
+      const dpr = window.devicePixelRatio && window.devicePixelRatio > 2 ? window.devicePixelRatio : 3;
       cvs.width = logicalW * dpr;
       cvs.height = logicalH * dpr;
       cvs.style.aspectRatio = `${logicalW} / ${logicalH}`;
@@ -520,7 +537,7 @@
       }
     }
 
-    // Scriptable drawBandChart 1:1 완벽 이식
+    // Scriptable drawBandChart 1:1 완벽 구현
     function drawBandChart(canvasId, closes, sma, upB, dnB) {
       const W = 540, H = 260;
       const cv = getHDContext(canvasId, W, H);
@@ -564,7 +581,7 @@
       plot(pSet.map(trans), C.cp, 6.0);
     }
 
-    // Scriptable drawFGIChart 1:1 완벽 이식
+    // Scriptable drawFGIChart 1:1 완벽 구현
     function drawFGIChart(canvasId, data) {
       const W = 540, H = 260;
       const cv = getHDContext(canvasId, W, H);
@@ -605,7 +622,7 @@
       });
     }
 
-    // Scriptable drawGauge 1:1 완벽 이식
+    // Scriptable drawGauge 1:1 완벽 구현
     function drawGauge(canvasId, val) {
       const W = 320, H = 180;
       const cv = getHDContext(canvasId, W, H);
