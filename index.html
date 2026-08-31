@@ -180,7 +180,7 @@
       <a class="fgi-header" href="https://edition.cnn.com/markets/fear-and-greed" target="_blank">공포와 탐욕 지수 (CNN FGI)</a>
       <div class="content-row">
         <div class="chart-box"><canvas id="fgiHistoryChart"></canvas></div>
-        <div class="fgi-info-box">
+        <div class="info-box fgi-info-box">
           <canvas id="fgiGauge"></canvas>
           <div class="fgi-rating" id="fgi-rating-text">-</div>
           <div class="fgi-stats" id="fgi-stats-text"></div>
@@ -195,7 +195,7 @@
 
   <script>
     const WORKER_URL = "https://spx-indicator-api.0x7f-core.workers.dev";
-    const CACHE_KEY = "SPX_INDICATOR_CACHE_V4";
+    const CACHE_KEY = "SPX_INDICATOR_CACHE_V5";
 
     const C = {
       p1: "#FFFFFF",
@@ -444,7 +444,6 @@
       }
 
       try {
-        // 캐시 방지 타임스탬프와 no-store 헤더로 항상 실시간 동기화 보장
         const res = await fetch(`${WORKER_URL}?_=${Date.now()}`, { cache: "no-store" });
         if (!res.ok) throw new Error("Fetch failed");
         const fresh = await res.json();
