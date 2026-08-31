@@ -1,4 +1,4 @@
-name: Build Android APK with 3 Widgets & Refresh Button
+name: Build Android APK (200SPX)
 
 on:
   workflow_dispatch:
@@ -31,9 +31,39 @@ jobs:
           npx cap add android
           npx cap sync android
 
+      - name: Set App Name to 200SPX
+        run: |
+          # 안드로이드 앱 이름을 '200SPX'로 명시적 지정
+          cat << 'EOF' > android/app/src/main/res/values/strings.xml
+          <?xml version='1.0' encoding='utf-8'?>
+          <resources>
+              <string name="app_name">200SPX</string>
+              <string name="title_activity_main">200SPX</string>
+              <string name="package_name">com.jinwook.spx200</string>
+              <string name="custom_url_scheme">com.jinwook.spx200</string>
+          </resources>
+          EOF
+
+      - name: Apply Custom App Icon
+        run: |
+          if [ -f "icon.png" ]; then
+            echo "Applying custom app icon..."
+            for size in 48:mdpi 72:hdpi 96:xhdpi 144:xxhdpi 192:xxxhdpi; do
+              dim="${size%%:*}"
+              res="${size##*:}"
+              mkdir -p "android/app/src/main/res/mipmap-${res}"
+              convert icon.png -resize "${dim}x${dim}" "android/app/src/main/res/mipmap-${res}/ic_launcher.png"
+              convert icon.png -resize "${dim}x${dim}" "android/app/src/main/res/mipmap-${res}/ic_launcher_round.png"
+            done
+            for size in 108:mdpi 162:hdpi 216:xhdpi 324:xxhdpi 432:xxxhdpi; do
+              dim="${size%%:*}"
+              res="${size##*:}"
+              convert icon.png -resize "${dim}x${dim}" "android/app/src/main/res/mipmap-${res}/ic_launcher_foreground.png"
+            done
+          fi
+
       - name: Inject Android Widgets with Refresh Button
         run: |
-          # 1. 새로고침 아이콘 및 원형 배경 드로어블 생성
           mkdir -p android/app/src/main/res/drawable
           cat << 'EOF' > android/app/src/main/res/drawable/ic_refresh.xml
           <vector xmlns:android="http://schemas.android.com/apk/res/android"
@@ -55,7 +85,6 @@ jobs:
           </shape>
           EOF
 
-          # 2. 우측 하단 새로고침 버튼이 포함된 위젯 레이아웃 XML 생성
           mkdir -p android/app/src/main/res/layout
           cat << 'EOF' > android/app/src/main/res/layout/spx_widget_layout.xml
           <?xml version="1.0" encoding="utf-8"?>
@@ -63,13 +92,11 @@ jobs:
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:background="#000000">
-
               <ImageView
                   android:id="@+id/widget_image"
                   android:layout_width="match_parent"
                   android:layout_height="match_parent"
                   android:scaleType="fitCenter" />
-
               <ImageView
                   android:id="@+id/btn_refresh"
                   android:layout_width="28dp"
@@ -85,7 +112,6 @@ jobs:
           </RelativeLayout>
           EOF
 
-          # 3. 위젯 3종 메타데이터 XML 생성
           mkdir -p android/app/src/main/res/xml
           cat << 'EOF' > android/app/src/main/res/xml/widget_spx_info.xml
           <?xml version="1.0" encoding="utf-8"?>
@@ -120,7 +146,6 @@ jobs:
               android:widgetCategory="home_screen" />
           EOF
 
-          # 4. 개별 터치 핸들링(앱 열기 vs 새로고침) BaseProvider Java 코드 생성
           mkdir -p android/app/src/main/java/com/jinwook/spx200
           cat << 'EOF' > android/app/src/main/java/com/jinwook/spx200/BaseWidgetProvider.java
           package com.jinwook.spx200;
@@ -179,14 +204,12 @@ jobs:
                                           RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.spx_widget_layout);
                                           views.setImageViewBitmap(R.id.widget_image, bitmap);
 
-                                          // 1. 위젯 배경/차트 터치 시 -> 전체 앱 열기
                                           Intent appIntent = new Intent(context, MainActivity.class);
                                           PendingIntent appPendingIntent = PendingIntent.getActivity(
                                               context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
                                           );
                                           views.setOnClickPendingIntent(R.id.widget_image, appPendingIntent);
 
-                                          // 2. 우측 하단 버튼 터치 시 -> 백그라운드 실시간 갱신
                                           Intent refreshIntent = new Intent(context, BaseWidgetProvider.this.getClass());
                                           refreshIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
                                           refreshIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[]{appWidgetId});
@@ -238,7 +261,6 @@ jobs:
           }
           EOF
 
-          # 5. AndroidManifest.xml에 위젯 리시버 등록
           node -e '
           const fs = require("fs");
           const file = "android/app/src/main/AndroidManifest.xml";
@@ -261,7 +283,6 @@ jobs:
           fs.writeFileSync(file, content);
           '
 
-          # 6. Kotlin 중복 충돌 방지 패치
           cat << 'EOF' >> android/app/build.gradle
 
           configurations.all {
@@ -279,5 +300,5 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: 200SPX-with-refresh-APK
+          name: 200SPX-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
