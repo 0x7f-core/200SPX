@@ -27,12 +27,12 @@ jobs:
           cp index.html www/
           npm init -y
           npm install @capacitor/core @capacitor/cli @capacitor/android
-          npx cap init "200SPX" "com.jinwook.spx200" --web-dir="www"
+          npx cap init "200SPX" "com.core0x7f.spx200" --web-dir="www"
 
           node -e '
           const fs = require("fs");
           let cfg = JSON.parse(fs.readFileSync("capacitor.config.json", "utf8"));
-          cfg.server = { "url": "https://jinwook0904.github.io/200SPX/", "cleartext": true };
+          cfg.server = { "url": "https://0x7f-core.github.io/200SPX/", "cleartext": true };
           fs.writeFileSync("capacitor.config.json", JSON.stringify(cfg, null, 2));
           '
 
@@ -46,8 +46,8 @@ jobs:
           <resources>
               <string name="app_name">200SPX</string>
               <string name="title_activity_main">200SPX</string>
-              <string name="package_name">com.jinwook.spx200</string>
-              <string name="custom_url_scheme">com.jinwook.spx200</string>
+              <string name="package_name">com.core0x7f.spx200</string>
+              <string name="custom_url_scheme">com.core0x7f.spx200</string>
           </resources>
           EOF
 
@@ -158,9 +158,9 @@ jobs:
               android:widgetCategory="home_screen" />
           EOF
 
-          mkdir -p android/app/src/main/java/com/jinwook/spx200
-          cat << 'EOF' > android/app/src/main/java/com/jinwook/spx200/BaseWidgetProvider.java
-          package com.jinwook.spx200;
+          mkdir -p android/app/src/main/java/com/core0x7f/spx200
+          cat << 'EOF' > android/app/src/main/java/com/core0x7f/spx200/BaseWidgetProvider.java
+          package com.core0x7f.spx200;
 
           import android.app.PendingIntent;
           import android.appwidget.AppWidgetManager;
@@ -285,32 +285,32 @@ jobs:
           }
           EOF
 
-          cat << 'EOF' > android/app/src/main/java/com/jinwook/spx200/SPXWidgetProvider.java
-          package com.jinwook.spx200;
+          cat << 'EOF' > android/app/src/main/java/com/core0x7f/spx200/SPXWidgetProvider.java
+          package com.core0x7f.spx200;
           public class SPXWidgetProvider extends BaseWidgetProvider {
               @Override
               protected String getUrl() {
-                  return "https://jinwook0904.github.io/200SPX/?v=spx";
+                  return "https://0x7f-core.github.io/200SPX/?v=spx";
               }
           }
           EOF
 
-          cat << 'EOF' > android/app/src/main/java/com/jinwook/spx200/QQQWidgetProvider.java
-          package com.jinwook.spx200;
+          cat << 'EOF' > android/app/src/main/java/com/core0x7f/spx200/QQQWidgetProvider.java
+          package com.core0x7f.spx200;
           public class QQQWidgetProvider extends BaseWidgetProvider {
               @Override
               protected String getUrl() {
-                  return "https://jinwook0904.github.io/200SPX/?v=qqq";
+                  return "https://0x7f-core.github.io/200SPX/?v=qqq";
               }
           }
           EOF
 
-          cat << 'EOF' > android/app/src/main/java/com/jinwook/spx200/FGIWidgetProvider.java
-          package com.jinwook.spx200;
+          cat << 'EOF' > android/app/src/main/java/com/core0x7f/spx200/FGIWidgetProvider.java
+          package com.core0x7f.spx200;
           public class FGIWidgetProvider extends BaseWidgetProvider {
               @Override
               protected String getUrl() {
-                  return "https://jinwook0904.github.io/200SPX/?v=fgi";
+                  return "https://0x7f-core.github.io/200SPX/?v=fgi";
               }
           }
           EOF
