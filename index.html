@@ -81,7 +81,7 @@
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      margin-bottom: 2px;
+      margin-bottom: 3px;
     }
 
     .title {
@@ -115,7 +115,7 @@
     }
 
     .chart-box {
-      flex: 1.05;
+      flex: 1;
       min-width: 0;
       display: flex;
       align-items: center;
@@ -123,12 +123,12 @@
     }
 
     .info-box {
-      flex: 1.15;
+      flex: 1.1;
       min-width: 0;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      gap: 2px;
+      gap: 3px;
     }
 
     canvas {
@@ -157,7 +157,7 @@
     .token-alert  { color: var(--alert); }
 
     .status-text {
-      font-size: 10.5px;
+      font-size: 11px;
       color: var(--status-p);
       margin-top: 3px;
       font-weight: 400;
@@ -183,7 +183,7 @@
     }
 
     .fgi-info-box {
-      flex: 1.15;
+      flex: 1;
       min-width: 0;
       display: flex;
       flex-direction: column;
@@ -238,7 +238,7 @@
     .refresh-btn:active { background: #222; }
 
     /* =============================================================================
-       iOS 스크립테이블 1:1 완벽 대응 위젯 스타일
+       안드로이드 위젯 전용 대형 볼드 가독성 최적화 스타일
        ============================================================================= */
     body.is-widget {
       width: 100vw;
@@ -246,7 +246,7 @@
       max-width: 100vw;
       max-height: 100vh;
       margin: 0;
-      padding: 8px 12px;
+      padding: 2.5vh 3vw;
       overflow: hidden;
       display: flex;
       flex-direction: column;
@@ -269,7 +269,7 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 10px 14px 8px 14px;
+      padding: 3.5vh 3.5vw 2.5vh 3.5vw;
       border-radius: 20px;
       border: 1px solid #1c1c1e;
       background: #000000;
@@ -280,26 +280,29 @@
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      margin-bottom: 1px;
+      margin-bottom: 0.2vh;
     }
 
     body.is-widget .title,
     body.is-widget .fgi-header {
-      font-size: 16px !important;
+      font-size: min(4.8vw, 9.8vh) !important;
       font-weight: 700;
       letter-spacing: -0.4px;
       color: #FFFFFF;
+      line-height: 1.1;
     }
 
     body.is-widget .version {
-      font-size: 9.5px !important;
+      font-size: min(2.8vw, 5.8vh) !important;
       color: #7c7c80;
+      line-height: 1;
     }
 
     body.is-widget .updated-time {
-      font-size: 10.5px !important;
-      margin-bottom: 5px;
+      font-size: min(3.2vw, 6.6vh) !important;
+      margin-bottom: 1.2vh;
       color: #FFFFFF;
+      line-height: 1.1;
     }
 
     body.is-widget .content-row {
@@ -307,13 +310,13 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 3vw;
       min-height: 0;
       width: 100%;
     }
 
     body.is-widget .chart-box {
-      flex: 1.05;
+      flex: 1;
       height: 100%;
       display: flex;
       align-items: center;
@@ -324,69 +327,73 @@
     body.is-widget .chart-box canvas {
       max-height: 100%;
       width: 100%;
-      height: auto;
-      object-fit: contain;
+      height: 100%;
+      object-fit: fill;
     }
 
     body.is-widget .info-box {
-      flex: 1.15;
+      flex: 1.05;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      gap: 2px;
+      gap: 0.8vh;
       min-width: 0;
-      padding-left: 2px;
+      padding-left: 0.5vw;
     }
 
     body.is-widget .sig-row {
-      font-size: 15.5px !important;
+      font-size: min(5.0vw, 10.2vh) !important;
       font-weight: 700;
-      line-height: 1.25;
+      line-height: 1.2;
+      white-space: nowrap;
+      letter-spacing: -0.3px;
+    }
+
+    body.is-widget .token-action {
+      margin-left: 1.2vw;
+      color: #FFFFFF;
+      font-weight: 700;
+    }
+
+    body.is-widget .status-text {
+      font-size: min(3.3vw, 6.8vh) !important;
+      color: #9a9aa0;
+      margin-top: 0.4vh;
       white-space: nowrap;
       letter-spacing: -0.2px;
     }
 
-    body.is-widget .token-action {
-      margin-left: 6px;
-      color: #FFFFFF;
-    }
-
-    body.is-widget .status-text {
-      font-size: 10.5px !important;
-      color: #9a9aa0;
-      margin-top: 3px;
-      white-space: nowrap;
-    }
-
     body.is-widget .dd-text {
-      font-size: 11.5px !important;
+      font-size: min(3.8vw, 8.0vh) !important;
       font-weight: 700;
       color: #FFFFFF;
-      margin-top: 4px;
+      margin-top: 0.5vh;
       white-space: nowrap;
+      letter-spacing: -0.2px;
     }
 
     body.is-widget .fgi-info-box {
-      flex: 1.15;
+      flex: 1.05;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 2px;
+      gap: 0.8vh;
       min-width: 0;
     }
 
     body.is-widget .fgi-rating {
-      font-size: 15px !important;
+      font-size: min(4.8vw, 9.8vh) !important;
       font-weight: 700;
-      margin-top: 2px;
+      margin-top: 0.4vh;
       white-space: nowrap;
     }
 
     body.is-widget .fgi-stats {
-      font-size: 13px !important;
-      gap: 4px;
+      font-size: min(3.8vw, 7.8vh) !important;
+      gap: 1.5vw;
       white-space: nowrap;
+      font-weight: 600;
     }
   </style>
 </head>
@@ -514,9 +521,9 @@
       }
     }
 
-    // iOS 스크립테이블과 동일한 다이내믹 밴드 차트 (480 x 280)
+    // 꽉 찬 다이내믹 밴드 차트 (480 x 260)
     function drawBandChart(canvasId, closes, sma, upB, dnB) {
-      const W = 480, H = 280;
+      const W = 480, H = 260;
       const cv = getHDContext(canvasId, W, H);
       if (!cv) return;
       const { ctx } = cv;
@@ -533,8 +540,8 @@
       const range = (max - min) === 0 ? 1 : (max - min);
 
       const trans = (v, i) => ({
-        x: 10 + (i / (SIZE - 1)) * (W - 20),
-        y: (H - 12) - ((v - min) / range) * (H - 24),
+        x: 6 + (i / (SIZE - 1)) * (W - 12),
+        y: (H - 8) - ((v - min) / range) * (H - 16),
       });
 
       const plot = (dat, col, wid) => {
@@ -553,30 +560,30 @@
         ctx.stroke();
       };
 
-      plot(uSet.map(trans), C.upperBand, 3.2);
-      plot(lSet.map(trans), C.lowerBand, 3.2);
-      plot(pSet.map(trans), C.cp, 5.0);
+      plot(uSet.map(trans), C.upperBand, 3.8);
+      plot(lSet.map(trans), C.lowerBand, 3.8);
+      plot(pSet.map(trans), C.cp, 6.0);
     }
 
-    // iOS 스크립테이블과 동일한 FGI 히스토리 차트 (480 x 280)
+    // 꽉 찬 FGI 히스토리 차트 (480 x 260)
     function drawFGIChart(canvasId, data) {
-      const W = 480, H = 280;
+      const W = 480, H = 260;
       const cv = getHDContext(canvasId, W, H);
       if (!cv) return;
-      const { ctx } = cv;
+      const { ctx, W: cW, H: cH } = cv;
 
-      const PAD_L = 8, PAD_R = 8, PAD_T = 12, PAD_B = 12;
-      const usableW = W - PAD_L - PAD_R;
-      const usableH = H - PAD_T - PAD_B;
+      const PAD_L = 6, PAD_R = 6, PAD_T = 10, PAD_B = 10;
+      const usableW = cW - PAD_L - PAD_R;
+      const usableH = cH - PAD_T - PAD_B;
       const toY = (val) => PAD_T + (1 - val / 100) * usableH;
       const toX = (i) => PAD_L + (i / (data.length - 1)) * usableW;
 
       [25, 50, 75].forEach(level => {
         ctx.beginPath();
         ctx.moveTo(PAD_L, toY(level));
-        ctx.lineTo(W - PAD_R, toY(level));
+        ctx.lineTo(cW - PAD_R, toY(level));
         ctx.strokeStyle = "rgba(170, 170, 170, 0.25)";
-        ctx.lineWidth = 1.2;
+        ctx.lineWidth = 1.5;
         ctx.stroke();
       });
 
@@ -587,14 +594,14 @@
         else ctx.lineTo(x, y);
       });
       ctx.strokeStyle = "rgba(255, 255, 255, 0.45)";
-      ctx.lineWidth = 2.5;
+      ctx.lineWidth = 2.8;
       ctx.stroke();
 
       data.forEach((d, i) => {
         const x = toX(i), y = toY(parseFloat(d.y));
         ctx.fillStyle = fgiColor(parseFloat(d.y));
         ctx.beginPath();
-        ctx.arc(x, y, 4.5, 0, Math.PI * 2);
+        ctx.arc(x, y, 5.0, 0, Math.PI * 2);
         ctx.fill();
       });
     }
@@ -605,7 +612,7 @@
       if (!cv) return;
       const { ctx } = cv;
 
-      const cx = W / 2, cy = H - 20, radius = 120, arcThick = 10;
+      const cx = W / 2, cy = H - 20, radius = 120, arcThick = 11;
 
       for (let i = 0; i < 120; i++) {
         const t = i / 119;
@@ -640,13 +647,12 @@
       const lx = cx + Math.cos(needleAngle) * labelDist;
       const ly = cy + Math.sin(needleAngle) * labelDist;
       ctx.fillStyle = C.p1;
-      ctx.font = "bold 22px -apple-system, sans-serif";
+      ctx.font = "bold 23px -apple-system, sans-serif";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText(val.toFixed(0), lx, ly);
     }
 
-    // iOS 스크립테이블과 100% 동일한 토큰 & 액션 렌더링
     function renderTokens(containerId, sig) {
       const el = document.getElementById(containerId);
       if (!el || !sig) return;
