@@ -43,25 +43,47 @@ jobs:
           </resources>
           EOF
 
-      - name: Apply Custom App Icon
+      - name: Apply Custom App Icon (.ico / .png)
         run: |
-          if [ -f "icon.png" ]; then
-            echo "Installing ImageMagick..."
-            sudo apt-get update && sudo apt-get install -y imagemagick
-            
-            echo "Applying custom app icon..."
+          echo "Installing ImageMagick..."
+          sudo apt-get update && sudo apt-get install -y imagemagick
+
+          ICON_SRC=""
+          if [ -f "icon.ico" ]; then
+            ICON_SRC="icon.ico"
+          elif [ -f "favicon.ico" ]; then
+            ICON_SRC="favicon.ico"
+          elif [ -f "icon.png" ]; then
+            ICON_SRC="icon.png"
+          fi
+
+          if [ -n "$ICON_SRC" ]; then
+            echo "Processing icon source: $ICON_SRC"
+
+            # .ico 파일 내부의 여러 해상도 중 가장 고해상도 레이어를 찾아 master_icon.png로 변환
+            if [[ "$ICON_SRC" == *.ico ]]; then
+              BEST_FRAME=$(identify -format "%w %p\n" "$ICON_SRC" | sort -nr | head -n 1 | awk '{print $2}')
+              convert "${ICON_SRC}[${BEST_FRAME}]" -background none master_icon.png
+            else
+              convert "$ICON_SRC" -background none master_icon.png
+            fi
+
+            # 1. 기본/원형 아이콘 생성 (선명도 유지 및 비율 고정)
             for size in 48:mdpi 72:hdpi 96:xhdpi 144:xxhdpi 192:xxxhdpi; do
               dim="${size%%:*}"
               res="${size##*:}"
               mkdir -p "android/app/src/main/res/mipmap-${res}"
-              convert icon.png -resize "${dim}x${dim}" "android/app/src/main/res/mipmap-${res}/ic_launcher.png"
-              convert icon.png -resize "${dim}x${dim}" "android/app/src/main/res/mipmap-${res}/ic_launcher_round.png"
+              convert master_icon.png -resize "${dim}x${dim}" -gravity center -extent "${dim}x${dim}" "android/app/src/main/res/mipmap-${res}/ic_launcher.png"
+              convert master_icon.png -resize "${dim}x${dim}" -gravity center -extent "${dim}x${dim}" "android/app/src/main/res/mipmap-${res}/ic_launcher_round.png"
             done
+
+            # 2. 안드로이드 어댑티브 아이콘 생성 (원형 마스크 잘림 방지 72% 안전 마진 적용)
             for size in 108:mdpi 162:hdpi 216:xhdpi 324:xxhdpi 432:xxxhdpi; do
               dim="${size%%:*}"
               res="${size##*:}"
               mkdir -p "android/app/src/main/res/mipmap-${res}"
-              convert icon.png -resize "${dim}x${dim}" "android/app/src/main/res/mipmap-${res}/ic_launcher_foreground.png"
+              inner_dim=$(awk "BEGIN {printf \"%d\", $dim * 0.72}")
+              convert master_icon.png -resize "${inner_dim}x${inner_dim}" -gravity center -background none -extent "${dim}x${dim}" "android/app/src/main/res/mipmap-${res}/ic_launcher_foreground.png"
             done
           fi
 
