@@ -61,7 +61,9 @@
 
     .loading-wrap { display: flex; justify-content: center; align-items: center; height: 70vh; color: var(--p2); font-size: 13px; }
 
-    /* 일반 웹 대시보드 */
+    /* =============================================================================
+       1. 일반 웹 브라우저 대시보드 뷰
+       ============================================================================= */
     html:not(.is-widget) body {
       padding: calc(14px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom));
       overflow-y: auto;
@@ -113,7 +115,9 @@
     }
     html:not(.is-widget) .refresh-btn:active { background: #222226; color: var(--p1); }
 
-    /* 안드로이드 홈 화면 위젯 전용 */
+    /* =============================================================================
+       2. 안드로이드 홈 화면 위젯 모드 (iOS Scriptable 1:1 매칭)
+       ============================================================================= */
     html.is-widget body { padding: 2.2vh 2.8vw; overflow: hidden; display: flex; flex-direction: column; justify-content: center; }
     html.is-widget .widget-container { width: 100%; height: 100%; display: flex; flex-direction: column; }
     html.is-widget .btn-wrap { display: none !important; }
@@ -180,7 +184,7 @@
       <a class="fgi-header" href="https://edition.cnn.com/markets/fear-and-greed" target="_blank">공포와 탐욕 지수 (CNN FGI)</a>
       <div class="content-row">
         <div class="chart-box"><canvas id="fgiHistoryChart"></canvas></div>
-        <div class="info-box fgi-info-box">
+        <div class="fgi-info-box">
           <canvas id="fgiGauge"></canvas>
           <div class="fgi-rating" id="fgi-rating-text">-</div>
           <div class="fgi-stats" id="fgi-stats-text"></div>
@@ -195,7 +199,7 @@
 
   <script>
     const WORKER_URL = "https://spx-indicator-api.0x7f-core.workers.dev";
-    const CACHE_KEY = "SPX_INDICATOR_CACHE_V5";
+    const CACHE_KEY = "SPX_INDICATOR_CACHE_V3";
 
     const C = {
       p1: "#FFFFFF",
@@ -257,13 +261,13 @@
 
       const SIZE = 90;
       const pSet = closes.slice(-SIZE), sSet = sma.slice(-SIZE);
-      const uSet = sSet.map(v => (v === null || isNaN(v)) ? NaN : v * (1 + upB));
-      const lSet = sSet.map(v => (v === null || isNaN(v)) ? NaN : v * (1 - dnB));
+      const uSet = sSet.map(v => isNaN(v) ? NaN : v * (1 + upB));
+      const lSet = sSet.map(v => isNaN(v) ? NaN : v * (1 - dnB));
 
       let min = Infinity, max = -Infinity;
       for (let i = 0; i < SIZE; i++) {
         [pSet[i], uSet[i], lSet[i]].forEach(v => {
-          if (!isNaN(v) && v !== null) { if (v < min) min = v; if (v > max) max = v; }
+          if (!isNaN(v)) { if (v < min) min = v; if (v > max) max = v; }
         });
       }
       const range = (max - min) || 1;
@@ -401,10 +405,10 @@
       document.getElementById("spx-updated").innerText = formatTime(data.spxTime);
       document.getElementById("qqq-updated").innerText = formatTime(data.qqqTime);
 
-      drawBandChart("spxChart", data.spx.closes, data.spx.sma, data.spx.upB || 0.025, data.spx.dnB || 0.025);
+      drawBandChart("spxChart", data.spx.closes, data.spx.sma, 0.025, 0.025);
       renderTokens("spx-info", data.spx.sig);
 
-      drawBandChart("qqqChart", data.qqq.closes, data.qqq.sma, data.qqq.upB || 0.02, data.qqq.dnB || 0.02);
+      drawBandChart("qqqChart", data.qqq.closes, data.qqq.sma, 0.02, 0.02);
       renderTokens("qqq-info", data.qqq.sig);
 
       drawFGIChart("fgiHistoryChart", data.fgi.data);
@@ -427,11 +431,9 @@
     }
 
     async function loadDashboard(forceRefresh = false) {
-      if (forceRefresh) localStorage.removeItem(CACHE_KEY);
-
       const cached = localStorage.getItem(CACHE_KEY);
       let rendered = false;
-      if (cached) {
+      if (cached && !forceRefresh) {
         try {
           renderDashboardUI(JSON.parse(cached));
           rendered = true;
@@ -444,7 +446,7 @@
       }
 
       try {
-        const res = await fetch(`${WORKER_URL}?_=${Date.now()}`, { cache: "no-store" });
+        const res = await fetch(WORKER_URL);
         if (!res.ok) throw new Error("Fetch failed");
         const fresh = await res.json();
         localStorage.setItem(CACHE_KEY, JSON.stringify(fresh));
