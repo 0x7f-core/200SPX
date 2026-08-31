@@ -142,7 +142,7 @@
     }
 
     body:not(.is-widget) .chart-box {
-      flex: 1.35;
+      flex: 1.15;
       min-width: 0;
       display: flex;
       align-items: center;
@@ -270,7 +270,7 @@
     }
 
     /* =============================================================================
-       2. 안드로이드 홈 위젯 전용 뷰포트 (body.is-widget)
+       2. 안드로이드 홈 위젯 전용 뷰포트 (body.is-widget) - 여백 및 비율 완벽 보정
        ============================================================================= */
     body.is-widget {
       width: 100vw !important;
@@ -278,7 +278,7 @@
       max-width: 100vw !important;
       max-height: 100vh !important;
       margin: 0 !important;
-      padding: 2.2vh 3.0vw !important;
+      padding: 2.0vh 2.6vw !important;
       overflow: hidden !important;
       display: flex !important;
       flex-direction: column !important;
@@ -324,7 +324,7 @@
       display: flex !important;
       flex-direction: column !important;
       justify-content: space-between !important;
-      padding: 2.8vh 3.2vw 2.2vh 3.2vw !important;
+      padding: 2.6vh 3.0vw 2.2vh 3.0vw !important;
       border-radius: 20px !important;
       border: 1px solid #1c1c1e !important;
       background: #000000 !important;
@@ -341,7 +341,7 @@
 
     body.is-widget .title,
     body.is-widget .fgi-header {
-      font-size: min(4.6vw, 9.6vh) !important;
+      font-size: min(4.4vw, 9.4vh) !important;
       font-weight: 600 !important;
       letter-spacing: -0.4px !important;
       color: #FFFFFF !important;
@@ -350,14 +350,14 @@
     }
 
     body.is-widget .version {
-      font-size: min(2.7vw, 5.6vh) !important;
-      color: #7c7c80;
+      font-size: min(2.6vw, 5.5vh) !important;
+      color: #7c7c80 !important;
       line-height: 1 !important;
       white-space: nowrap !important;
     }
 
     body.is-widget .updated-time {
-      font-size: min(3.0vw, 6.4vh) !important;
+      font-size: min(2.9vw, 6.2vh) !important;
       margin-bottom: 0.8vh !important;
       color: #FFFFFF;
       line-height: 1.1 !important;
@@ -369,13 +369,14 @@
       display: flex !important;
       align-items: center !important;
       justify-content: space-between !important;
-      gap: 3.0vw !important;
+      gap: 2.0vw !important;
       min-height: 0 !important;
       width: 100% !important;
     }
 
+    /* 차트 영역: 46% 배분 */
     body.is-widget .chart-box {
-      flex: 1.35 !important;
+      flex: 1.05 !important;
       height: 100% !important;
       display: flex !important;
       align-items: center !important;
@@ -390,8 +391,9 @@
       object-fit: fill !important;
     }
 
+    /* 텍스트 정보 영역: 54% 배분 (우측 잘림 방지) */
     body.is-widget .info-box {
-      flex: 1.0 !important;
+      flex: 1.25 !important;
       display: flex !important;
       flex-direction: column !important;
       justify-content: center !important;
@@ -401,7 +403,7 @@
     }
 
     body.is-widget .sig-row {
-      font-size: min(4.8vw, 10.0vh) !important;
+      font-size: min(4.6vw, 9.8vh) !important;
       font-weight: 600 !important;
       line-height: 1.2 !important;
       white-space: nowrap !important;
@@ -409,30 +411,30 @@
     }
 
     body.is-widget .token-action {
-      margin-left: 1.2vw !important;
+      margin-left: 1.0vw !important;
       color: #FFFFFF !important;
       font-weight: 600 !important;
     }
 
     body.is-widget .status-text {
-      font-size: min(3.2vw, 6.6vh) !important;
+      font-size: min(2.95vw, 6.2vh) !important;
       color: #9a9aa0 !important;
       margin-top: 0.4vh !important;
       white-space: nowrap !important;
-      letter-spacing: -0.2px !important;
+      letter-spacing: -0.35px !important;
     }
 
     body.is-widget .dd-text {
-      font-size: min(3.6vw, 7.8vh) !important;
+      font-size: min(3.4vw, 7.4vh) !important;
       font-weight: 600 !important;
       color: #FFFFFF !important;
       margin-top: 0.5vh !important;
       white-space: nowrap !important;
-      letter-spacing: -0.2px !important;
+      letter-spacing: -0.3px !important;
     }
 
     body.is-widget .fgi-info-box {
-      flex: 1 !important;
+      flex: 1.2 !important;
       display: flex !important;
       flex-direction: column !important;
       align-items: center !important;
@@ -442,14 +444,14 @@
     }
 
     body.is-widget .fgi-rating {
-      font-size: min(4.6vw, 9.6vh) !important;
+      font-size: min(4.5vw, 9.4vh) !important;
       font-weight: 600 !important;
       margin-top: 0.4vh !important;
       white-space: nowrap !important;
     }
 
     body.is-widget .fgi-stats {
-      font-size: min(3.6vw, 7.6vh) !important;
+      font-size: min(3.5vw, 7.4vh) !important;
       gap: 1.5vw !important;
       white-space: nowrap !important;
       font-weight: 500 !important;
@@ -500,7 +502,7 @@
         <div class="chart-box">
           <canvas id="fgiHistoryChart"></canvas>
         </div>
-        <div class="fgi-info-box">
+        <div class="info-box" id="fgiGaugeBox">
           <canvas id="fgiGauge"></canvas>
           <div class="fgi-rating" id="fgi-rating-text">-</div>
           <div class="fgi-stats" id="fgi-stats-text"></div>
@@ -593,7 +595,7 @@
 
     // Scriptable drawBandChart 1:1 완벽 구현
     function drawBandChart(canvasId, closes, sma, upB, dnB) {
-      const W = 540, H = 260;
+      const W = 520, H = 260;
       const cv = getHDContext(canvasId, W, H);
       if (!cv) return;
       const { ctx } = cv;
@@ -637,7 +639,7 @@
 
     // Scriptable drawFGIChart 1:1 완벽 구현
     function drawFGIChart(canvasId, data) {
-      const W = 540, H = 260;
+      const W = 520, H = 260;
       const cv = getHDContext(canvasId, W, H);
       if (!cv) return;
       const { ctx, W: cW, H: cH } = cv;
